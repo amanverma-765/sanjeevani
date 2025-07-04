@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ark.sanjeevani.presentation.features.auth.screen.LoginScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.LocalizationScreen
 
 
@@ -39,7 +40,16 @@ fun RootNavHost(
         }
 
         composable<Destinations.Login> {
-
+            LoginScreen(
+                onSuccessFullAuth = {
+                    navController.navigate(Destinations.Home) {
+                        launchSingleTop = true
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
 
         composable<Destinations.Registration> {
@@ -51,5 +61,4 @@ fun RootNavHost(
         }
 
     }
-
 }

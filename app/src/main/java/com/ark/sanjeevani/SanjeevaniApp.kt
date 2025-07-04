@@ -2,6 +2,7 @@ package com.ark.sanjeevani
 
 import android.app.Application
 import com.ark.sanjeevani.koin.appModule
+import com.ark.sanjeevani.koin.supabaseModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
@@ -12,7 +13,7 @@ class SanjeevaniApp : Application() {
         startKoin {
             androidLogger()
             androidContext(this@SanjeevaniApp)
-            modules(appModule)
+            modules(appModule, supabaseModule)
         }
     }
 }
