@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SanjeevaniTheme {
                 Surface {
-                    RootNavHost(startDestination = Destinations.Login)
+                    RootNavHost(startDestination = Destinations.Home)
                 }
             }
         }

@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ark.sanjeevani.presentation.features.auth.screen.LoginScreen
+import com.ark.sanjeevani.presentation.features.home.screen.HomeScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.LocalizationScreen
 
 
@@ -57,7 +58,16 @@ fun RootNavHost(
         }
 
         composable<Destinations.Home> {
-
+            HomeScreen(
+                onUserNotAuthenticated = {
+                    navController.navigate(Destinations.Localization) {
+                        launchSingleTop = true
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
 
     }
