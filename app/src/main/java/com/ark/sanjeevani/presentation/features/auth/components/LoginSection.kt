@@ -1,31 +1,19 @@
 package com.ark.sanjeevani.presentation.features.auth.components
 
-import android.R.attr.label
-import android.R.attr.onClick
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextFieldDefaults.contentPadding
-import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,66 +23,88 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ark.sanjeevani.R
+import com.ark.sanjeevani.presentation.features.auth.logic.UserRole
 
 
 @Composable
-fun LoginSection(onLoginClicked: () -> Unit) {
+fun LoginSection(
+    modifier: Modifier = Modifier,
+    onRoleSelection: (role: UserRole) -> Unit,
+    userRole: UserRole,
+    onLoginClicked: () -> Unit
+) {
 
-    val lightColors = lightColorScheme(MaterialTheme.colorScheme.primary)
-
-    val features = listOf(
-        "Book Appointment",
-        "Hospitals Nearby",
-        "Connect with Doctors"
-    )
-
-    FlowRow(
-        horizontalArrangement = Arrangement.Center,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.width(400.dp)
-    ) {
-        features.forEach {
-            NonClickableChip(it)
-        }
-    }
-
-    OutlinedButton(
-        onClick = onLoginClicked,
-        colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = lightColors.onSurface,
-            containerColor = lightColors.surfaceContainerHigh
-        ),
-        shape = RoundedCornerShape(48.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-        modifier = Modifier.width(350.dp)
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.padding(16.dp)
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(
-                painter = painterResource(R.drawable.google_icon),
-                contentDescription = "Google icon",
-                modifier = Modifier.size(40.dp),
-                tint = Color.Unspecified
+
+            UserSelectionCard(
+                title = "Individual",
+                subTitle = "Track your health\n& consult experts",
+                icon = R.drawable.user_art,
+                onClick = { onRoleSelection(UserRole.INDIVIDUAL) },
+                selected = userRole == UserRole.INDIVIDUAL,
+                modifier = Modifier.weight(1f)
             )
-            Text(
-                text = "Continue with Google",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = FontWeight.SemiBold
-                )
+
+            UserSelectionCard(
+                title = "Health Specialist",
+                subTitle = "Manage patients\n& share expertise",
+                icon = R.drawable.doctor_art,
+                onClick = { onRoleSelection(UserRole.DOCTOR) },
+                selected = userRole == UserRole.DOCTOR,
+                modifier = Modifier.weight(1f)
             )
         }
+
+        OutlinedButton(
+            onClick = onLoginClicked,
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+            ),
+            shape = RoundedCornerShape(40),
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.google_icon),
+                    contentDescription = "Google icon",
+                    modifier = Modifier.size(40.dp),
+                    tint = Color.Unspecified
+                )
+                Text(
+                    text = "Continue with Google",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+            }
+        }
+
+        Text(
+            text = "By continuing, you agree to our Terms of Service and Privacy Policy",
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodySmall.copy(
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp)
+                .padding(bottom = 16.dp)
+        )
     }
-    Text(
-        text = "By continuing, you agree to our Terms of Service and Privacy Policy",
-        textAlign = TextAlign.Center,
-        style = MaterialTheme.typography.bodySmall.copy(
-            color = lightColors.onSurface.copy(alpha = 0.6f)
-        ),
-        modifier = Modifier
-            .width(350.dp)
-            .padding(horizontal = 32.dp)
-            .padding(bottom = 16.dp)
-    )
 }

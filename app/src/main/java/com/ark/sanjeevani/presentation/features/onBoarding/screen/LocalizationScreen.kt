@@ -9,20 +9,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ark.sanjeevani.presentation.components.TopBarWithCenterText
+import com.ark.sanjeevani.presentation.features.onBoarding.components.LanguageTopBar
 import com.ark.sanjeevani.presentation.features.onBoarding.components.LanguageCard
-import com.ark.sanjeevani.presentation.features.onBoarding.logic.Language
 import com.ark.sanjeevani.presentation.features.onBoarding.logic.LocalizationUiEvent
 import com.ark.sanjeevani.presentation.features.onBoarding.logic.LocalizationViewModel
 import com.ark.sanjeevani.utils.plus
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -31,16 +26,17 @@ import org.koin.androidx.compose.koinViewModel
 fun LocalizationScreen(
     modifier: Modifier = Modifier,
     viewModel: LocalizationViewModel = koinViewModel(),
-    onLanguageSelected: (lang: Language) -> Unit
+    onLanguageSelected: () -> Unit
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
-            TopBarWithCenterText(
-                centerText = "Select a Language"
+            LanguageTopBar(
+                title = "Select a Language",
+                onNextClicked = onLanguageSelected,
+                selected = uiState.selectedLanguage != null
             )
         }
     ) { innerPadding ->
@@ -61,10 +57,6 @@ fun LocalizationScreen(
                         viewModel.onEvent(
                             LocalizationUiEvent.SelectLanguage(it)
                         )
-                        coroutineScope.launch {
-                            delay(300)
-                            onLanguageSelected(it)
-                        }
                     }
                 )
             }

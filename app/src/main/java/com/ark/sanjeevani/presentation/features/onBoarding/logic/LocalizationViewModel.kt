@@ -15,18 +15,18 @@ class LocalizationViewModel : ViewModel() {
     fun onEvent(event: LocalizationUiEvent) {
         when (event) {
             LocalizationUiEvent.ClearErrorMsg -> _uiState.update { it.copy(errorMsg = null) }
-            is LocalizationUiEvent.SelectLanguage -> selectLanguage(event.lang)
+            is LocalizationUiEvent.SelectLanguage -> selectLanguage(event.language)
         }
     }
 
     init { viewModelScope.launch { getAllLanguages() } }
 
-    private fun selectLanguage(lang: Language) {
+    private fun selectLanguage(language: Language) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             // language selection logic
             val updatedLanguages = appLanguages.map {
-                if (it.id == lang.id) {
+                if (it.id == language.id) {
                     it.copy(selected = true)
                 } else {
                     it.copy(selected = false)
@@ -34,6 +34,7 @@ class LocalizationViewModel : ViewModel() {
             }
             _uiState.update { it.copy(
                 isLoading = false,
+                selectedLanguage = language,
                 languageResp = updatedLanguages
             )}
         }
