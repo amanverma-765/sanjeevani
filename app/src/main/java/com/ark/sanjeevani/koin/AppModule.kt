@@ -1,5 +1,6 @@
 package com.ark.sanjeevani.koin
 
+import com.ark.sanjeevani.presentation.features.auth.logic.AuthViewModel
 import com.ark.sanjeevani.data.remote.SupabaseDb
 import com.ark.sanjeevani.data.repo.SupabaseRepoImpl
 import com.ark.sanjeevani.domain.repository.SupabaseRepo
@@ -15,4 +16,5 @@ val appModule = module {
     singleOf(::SupabaseRepoImpl) { bind<SupabaseRepo>() }
     singleOf(::SupabaseDb)
     viewModelOf(::HomeViewModel)
+    viewModelOf(::AuthViewModel)
 }

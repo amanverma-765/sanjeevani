@@ -2,12 +2,13 @@ package com.ark.sanjeevani.presentation.features.home.logic
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Logger
 import com.ark.sanjeevani.domain.repository.SupabaseRepo
-import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.message
+import com.skydoves.sandwich.onFailure
+import com.skydoves.sandwich.onSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -19,6 +20,7 @@ class HomeViewModel(private val supabaseRepo: SupabaseRepo) : ViewModel() {
     fun onEvent(event: HomeUiEvent) {
         when (event) {
             HomeUiEvent.ClearErrorMsg -> _uiState.update { it.copy(errorMsg = null) }
+            HomeUiEvent.GetAuthenticatedUser -> getAuthenticatedUser()
         }
     }
 
@@ -30,29 +32,11 @@ class HomeViewModel(private val supabaseRepo: SupabaseRepo) : ViewModel() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             try {
-                when (val response = supabaseRepo.getAuthenticatedUser()) {
-                    is ApiResponse.Success -> {
-                        Logger.i("Logged in as: ${response.data.email}")
-                        _uiState.update {
-                            it.copy(
-                                userInfo = response.data,
-                                isLoading = false
-                            )
-                        }
-                    }
-
-                    is ApiResponse.Failure.Error -> _uiState.update {
-                        it.copy(
-                            errorMsg = response.message(),
-                            isLoading = false
-                        )
-                    }
-
-                    is ApiResponse.Failure.Exception -> _uiState.update {
-                        it.copy(
-                            errorMsg = "Something went wrong.",
-                            isLoading = false
-                        )
+                supabaseRepo.listenAuthStatus().collectLatest { apiResponse ->
+                    apiResponse.onSuccess {
+                        _uiState.update { it.copy(isLoading = false, userInfo = data) }
+                    }.onFailure {
+                        _uiState.update { it.copy(isLoading = false, errorMsg = message()) }
                     }
                 }
             } catch (e: Exception) {

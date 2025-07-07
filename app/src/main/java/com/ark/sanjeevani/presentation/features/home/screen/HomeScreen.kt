@@ -23,8 +23,7 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
-    onNotificationClicked: () -> Unit,
-    onUserNotAuthenticated: () -> Unit
+    onNotificationClicked: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -33,16 +32,6 @@ fun HomeScreen(
         LaunchedEffect(errorMsg) {
             context.toastShort(errorMsg)
             viewModel.onEvent(HomeUiEvent.ClearErrorMsg)
-        }
-    }
-
-    LaunchedEffect(
-        key1 = uiState.userInfo,
-        key2 = uiState.errorMsg,
-        key3 = uiState.isLoading
-    ) {
-        if (!uiState.isLoading && uiState.userInfo == null && uiState.errorMsg != null) {
-            onUserNotAuthenticated()
         }
     }
 

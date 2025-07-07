@@ -2,8 +2,8 @@ package com.ark.sanjeevani.domain.repository
 
 import com.ark.sanjeevani.domain.model.LoginUserInfo
 import com.skydoves.sandwich.ApiResponse
-import io.github.jan.supabase.auth.user.UserInfo
+import kotlinx.coroutines.flow.Flow
 
 interface SupabaseRepo {
-    suspend fun getAuthenticatedUser(): ApiResponse<LoginUserInfo>
+    fun listenAuthStatus(): Flow<ApiResponse<LoginUserInfo>>
 }

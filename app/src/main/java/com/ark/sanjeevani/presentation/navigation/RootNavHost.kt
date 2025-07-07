@@ -60,14 +60,6 @@ fun RootNavHost(
 
         composable<Destinations.Home> {
             HomeScreen(
-                onUserNotAuthenticated = {
-                    navController.navigate(Destinations.Localization) {
-                        launchSingleTop = true
-                        popUpTo(0) {
-                            inclusive = true
-                        }
-                    }
-                },
                 onNotificationClicked = {
                     navController.navigate(Destinations.Notification)
                 }

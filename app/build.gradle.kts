@@ -117,4 +117,5 @@ dependencies {
     // Others
     implementation(libs.material.kolor)
     implementation(libs.touchlab.kermit)
+    implementation(libs.androidx.core.splashscreen)
 }
