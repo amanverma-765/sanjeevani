@@ -1,5 +1,14 @@
 package com.ark.sanjeevani.presentation.features.auth.screen
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,14 +27,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ark.sanjeevani.R
+import com.ark.sanjeevani.presentation.features.auth.components.LoginRoleSelector
 import com.ark.sanjeevani.presentation.features.auth.components.LoginSection
-import com.ark.sanjeevani.presentation.features.auth.logic.UserRole
+import com.ark.sanjeevani.presentation.features.auth.logic.LoginRole
+import com.ark.sanjeevani.ui.theme.loginScreenGradient
 import com.ark.sanjeevani.utils.toastLong
 import com.ark.sanjeevani.utils.toastShort
 import io.github.jan.supabase.SupabaseClient
@@ -35,16 +44,18 @@ import io.github.jan.supabase.compose.auth.composeAuth
 import org.koin.compose.koinInject
 
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
     supabaseClient: SupabaseClient = koinInject<SupabaseClient>(),
     onSuccessFullAuth: () -> Unit
 ) {
-
-    var userRole by remember { mutableStateOf(UserRole.INDIVIDUAL) }
+    var loginRole by remember { mutableStateOf<LoginRole?>(null) }
+    var isRoleSelected by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+    BackHandler(enabled = isRoleSelected) { isRoleSelected = false }
 
     val action = supabaseClient.composeAuth.rememberSignInWithGoogle(
         onResult = { result ->
@@ -74,18 +85,8 @@ fun LoginScreen(
         modifier = modifier
             .fillMaxSize()
             .clipToBounds()
-            .background(
-                brush = Brush.radialGradient(
-                    radius = 1000f,
-                    colors = listOf(
-                        Color(0xFF2D5D46),
-                        Color(0xFF377B54),
-                        Color(0xFF499B4D)
-                    )
-                )
-            )
+            .background(brush = loginScreenGradient)
     ) {
-
         Image(
             painter = painterResource(R.drawable.login_doc),
             contentDescription = null,
@@ -94,19 +95,38 @@ fun LoginScreen(
                 .offset(y = -(100).dp)
                 .align(Alignment.TopCenter)
         )
-
         ElevatedCard(
             elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
             shape = RoundedCornerShape(topStartPercent = 10, topEndPercent = 10),
             modifier = Modifier
+                .animateContentSize()
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
         ) {
-            LoginSection(
-                onRoleSelection = { userRole = it},
-                userRole = userRole,
-                onLoginClicked = { action.startFlow() }
-            )
+            AnimatedContent(
+                targetState = isRoleSelected,
+                transitionSpec = {
+                    if (targetState) {
+                        slideInHorizontally { it } + fadeIn() togetherWith slideOutHorizontally { -it } + fadeOut()
+                    } else {
+                        slideInHorizontally { -it } + fadeIn() togetherWith slideOutHorizontally { +it } + fadeOut()
+                    }
+                },
+                label = "RoleToSectionTransition"
+            ) { selected ->
+                if (!selected) {
+                    LoginRoleSelector(
+                        onRoleSelection = { loginRole = it },
+                        loginRole = loginRole,
+                        onNextClicked = { isRoleSelected = true }
+                    )
+                } else {
+                    LoginSection(
+                        loginRole = loginRole,
+                        onLoginClicked = { action.startFlow() }
+                    )
+                }
+            }
         }
     }
 }

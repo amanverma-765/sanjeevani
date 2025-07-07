@@ -30,7 +30,9 @@ import coil3.compose.rememberAsyncImagePainter
 fun HomeTopBar(
     modifier: Modifier = Modifier,
     userName: String,
-    userProfileUrl: String
+    userProfileUrl: String,
+    onNotificationClicked: () -> Unit,
+    onProfileClicked: () -> Unit
 ) {
     TopAppBar(
         modifier = modifier,
@@ -49,7 +51,7 @@ fun HomeTopBar(
         },
         navigationIcon = {
             IconButton(
-                onClick = {},
+                onClick = onProfileClicked,
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)
                 ),
@@ -68,7 +70,7 @@ fun HomeTopBar(
         },
         actions = {
             FilledIconButton(
-                onClick = {},
+                onClick = onNotificationClicked,
                 shape = RoundedCornerShape(40),
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)

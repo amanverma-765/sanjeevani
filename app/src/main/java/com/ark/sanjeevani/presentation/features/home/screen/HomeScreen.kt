@@ -9,11 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import co.touchlab.kermit.Logger
 import com.ark.sanjeevani.presentation.features.home.components.HomeTopBar
 import com.ark.sanjeevani.presentation.features.home.logic.HomeUiEvent
 import com.ark.sanjeevani.presentation.features.home.logic.HomeViewModel
+import com.ark.sanjeevani.utils.toastShort
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -22,13 +23,17 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
+    onNotificationClicked: () -> Unit,
     onUserNotAuthenticated: () -> Unit
 ) {
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
-    LaunchedEffect(true) {
-        viewModel.onEvent(HomeUiEvent.GetAuthenticatedUser)
+    uiState.errorMsg?.let { errorMsg ->
+        LaunchedEffect(errorMsg) {
+            context.toastShort(errorMsg)
+            viewModel.onEvent(HomeUiEvent.ClearErrorMsg)
+        }
     }
 
     LaunchedEffect(
@@ -36,7 +41,6 @@ fun HomeScreen(
         key2 = uiState.errorMsg,
         key3 = uiState.isLoading
     ) {
-        Logger.e("${uiState.userInfo}")
         if (!uiState.isLoading && uiState.userInfo == null && uiState.errorMsg != null) {
             onUserNotAuthenticated()
         }
@@ -45,14 +49,10 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             HomeTopBar(
-                userName = uiState.userInfo
-                    ?.userMetadata?.getValue("name")
-                    .toString().replace("\"", "")
-                    .split(" ")
-                    .firstOrNull()
-                    ?: "User",
-                userProfileUrl = uiState.userInfo?.userMetadata?.getValue("avatar_url")
-                    .toString().replace("\"", "")
+                userName = uiState.userInfo?.name?.split(" ")?.firstOrNull() ?: "User",
+                userProfileUrl = uiState.userInfo?.profileUrl ?: "",
+                onNotificationClicked = onNotificationClicked,
+                onProfileClicked = {}
             )
         }
     ) { innerPadding ->

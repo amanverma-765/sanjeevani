@@ -19,7 +19,9 @@ class LocalizationViewModel : ViewModel() {
         }
     }
 
-    init { viewModelScope.launch { getAllLanguages() } }
+    init {
+        getAllLanguages()
+    }
 
     private fun selectLanguage(language: Language) {
         viewModelScope.launch {
@@ -32,20 +34,22 @@ class LocalizationViewModel : ViewModel() {
                     it.copy(selected = false)
                 }
             }
-            _uiState.update { it.copy(
-                isLoading = false,
-                selectedLanguage = language,
-                languageResp = updatedLanguages
-            )}
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    selectedLanguage = language,
+                    languageResp = updatedLanguages
+                )
+            }
         }
     }
 
 
     private fun getAllLanguages() {
-         viewModelScope.launch {
-             _uiState.update { it.copy(isLoading = true) }
-             // language retrieval logic
-             _uiState.update { it.copy(isLoading = false, languageResp = appLanguages) }
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+            // language retrieval logic
+            _uiState.update { it.copy(isLoading = false, languageResp = appLanguages) }
         }
     }
 

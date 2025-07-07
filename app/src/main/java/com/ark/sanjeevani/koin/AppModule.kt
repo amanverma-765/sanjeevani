@@ -2,7 +2,7 @@ package com.ark.sanjeevani.koin
 
 import com.ark.sanjeevani.data.remote.SupabaseDb
 import com.ark.sanjeevani.data.repo.SupabaseRepoImpl
-import com.ark.sanjeevani.domain.SupabaseRepo
+import com.ark.sanjeevani.domain.repository.SupabaseRepo
 import com.ark.sanjeevani.presentation.features.home.logic.HomeViewModel
 import com.ark.sanjeevani.presentation.features.onBoarding.logic.LocalizationViewModel
 import org.koin.core.module.dsl.bind

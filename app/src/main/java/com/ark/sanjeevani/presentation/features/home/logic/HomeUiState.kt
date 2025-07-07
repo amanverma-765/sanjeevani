@@ -1,9 +1,9 @@
 package com.ark.sanjeevani.presentation.features.home.logic
 
-import io.github.jan.supabase.auth.user.UserInfo
+import com.ark.sanjeevani.domain.model.LoginUserInfo
 
 data class HomeUiState(
     val isLoading: Boolean = false,
     val errorMsg: String? = null,
-    val userInfo: UserInfo? = null
+    val userInfo: LoginUserInfo? = null
 )

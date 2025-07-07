@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ark.sanjeevani.presentation.features.auth.screen.LoginScreen
 import com.ark.sanjeevani.presentation.features.home.screen.HomeScreen
+import com.ark.sanjeevani.presentation.features.notification.screen.NotificationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.LocalizationScreen
 
 
@@ -66,7 +67,16 @@ fun RootNavHost(
                             inclusive = true
                         }
                     }
+                },
+                onNotificationClicked = {
+                    navController.navigate(Destinations.Notification)
                 }
+            )
+        }
+
+        composable<Destinations.Notification> {
+            NotificationScreen(
+                onBackClicked = { navController.navigateUp() }
             )
         }
 
