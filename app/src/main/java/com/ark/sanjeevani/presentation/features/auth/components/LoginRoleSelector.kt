@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ark.sanjeevani.R
-import com.ark.sanjeevani.presentation.features.auth.logic.LoginRole
+import com.ark.sanjeevani.domain.enums.LoginRole
 
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -61,7 +61,7 @@ fun LoginRoleSelector(
             UserSelectionCard(
                 title = "User",
                 subTitle = "Track your health\n& consult experts",
-                icon = R.drawable.user_art,
+                icon = R.drawable.user_icon,
                 onClick = { onRoleSelection(LoginRole.INDIVIDUAL) },
                 selected = loginRole == LoginRole.INDIVIDUAL,
                 modifier = Modifier.weight(1f)
@@ -70,7 +70,7 @@ fun LoginRoleSelector(
             UserSelectionCard(
                 title = "Health Specialist",
                 subTitle = "Manage patients\n& share expertise",
-                icon = R.drawable.doctor_art,
+                icon = R.drawable.doctor_icon,
                 onClick = { onRoleSelection(LoginRole.DOCTOR) },
                 selected = loginRole == LoginRole.DOCTOR,
                 modifier = Modifier.weight(1f)

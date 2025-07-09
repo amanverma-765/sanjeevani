@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.ark.sanjeevani.R
 import com.ark.sanjeevani.presentation.features.auth.components.LoginRoleSelector
 import com.ark.sanjeevani.presentation.features.auth.components.LoginSection
-import com.ark.sanjeevani.presentation.features.auth.logic.LoginRole
+import com.ark.sanjeevani.domain.enums.LoginRole
 import com.ark.sanjeevani.ui.theme.loginScreenGradient
 import com.ark.sanjeevani.utils.toastLong
 import com.ark.sanjeevani.utils.toastShort

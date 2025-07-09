@@ -28,7 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ark.sanjeevani.R
-import com.ark.sanjeevani.presentation.features.auth.logic.LoginRole
+import com.ark.sanjeevani.domain.enums.LoginRole
 
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

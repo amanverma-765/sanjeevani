@@ -96,6 +96,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     // Coil dependencies
     implementation(libs.coil)
+    implementation(libs.coil.core)
     implementation(libs.coil.network.ktor)
     // Vector icons
     implementation(libs.composeIcons.fontAwesome)

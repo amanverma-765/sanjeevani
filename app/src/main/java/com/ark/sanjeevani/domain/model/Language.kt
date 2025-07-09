@@ -1,4 +1,4 @@
-package com.ark.sanjeevani.presentation.features.onBoarding.logic
+package com.ark.sanjeevani.domain.model
 
 data class Language(
     val id: Int,
@@ -6,7 +6,7 @@ data class Language(
     val selected: Boolean
 )
 
-val appLanguages = listOf(
+val mockLanguages = listOf(
     Language(id = 2, name = "English", selected = false),
     Language(id = 1, name = "हिन्दी", selected = false),
     Language(id = 3, name = "ગુજરાતી", selected = false),

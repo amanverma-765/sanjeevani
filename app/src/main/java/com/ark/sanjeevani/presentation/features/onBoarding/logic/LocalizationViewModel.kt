@@ -2,6 +2,8 @@ package com.ark.sanjeevani.presentation.features.onBoarding.logic
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ark.sanjeevani.domain.model.Language
+import com.ark.sanjeevani.domain.model.mockLanguages
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -27,7 +29,7 @@ class LocalizationViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             // language selection logic
-            val updatedLanguages = appLanguages.map {
+            val updatedLanguages = mockLanguages.map {
                 if (it.id == language.id) {
                     it.copy(selected = true)
                 } else {
@@ -49,7 +51,7 @@ class LocalizationViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             // language retrieval logic
-            _uiState.update { it.copy(isLoading = false, languageResp = appLanguages) }
+            _uiState.update { it.copy(isLoading = false, languageResp = mockLanguages) }
         }
     }
 
