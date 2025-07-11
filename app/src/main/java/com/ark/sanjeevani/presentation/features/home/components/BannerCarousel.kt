@@ -12,6 +12,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -31,7 +33,6 @@ fun BannerCarousel(
     banners: List<BannerItem>
 ) {
     if (banners.isEmpty()) return
-
     val pagerState = rememberPagerState(
         initialPage = banners.size * 1000,
         pageCount = { Int.MAX_VALUE }
@@ -50,9 +51,9 @@ fun BannerCarousel(
     Column(modifier = modifier) {
         HorizontalPager(
             pageSpacing = 16.dp,
+            beyondViewportPageCount = 1,
             state = pagerState,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) { page ->
             val actualPage = page % banners.size
             val bannerItem = banners[actualPage]
@@ -89,6 +90,9 @@ private fun DotIndicator(
     totalDots: Int,
     modifier: Modifier = Modifier
 ) {
+    val activeDot = MaterialTheme.colorScheme.surfaceTint.copy(.7f)
+    val inactiveDot = MaterialTheme.colorScheme.surfaceColorAtElevation(24.dp)
+
     Canvas(modifier = modifier.height(16.dp)) {
         val indicatorSize = 8.dp.toPx()
         val spacing = 4.dp.toPx()
@@ -97,7 +101,7 @@ private fun DotIndicator(
 
         for (i in 0 until totalDots) {
             drawCircle(
-                color = if (i == currentPage % totalDots) Color.Black else Color.Gray,
+                color = if (i == currentPage % totalDots) activeDot else inactiveDot,
                 radius = indicatorSize / 2,
                 center = Offset(
                     startX + i * (indicatorSize + spacing) + indicatorSize / 2,

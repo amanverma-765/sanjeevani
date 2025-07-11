@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -58,7 +59,7 @@ private fun ServiceCard(
                 width = 1.dp,
                 color = service.color
             ),
-            colors = CardDefaults.cardColors(containerColor = service.color.copy(.7f)),
+            colors = CardDefaults.cardColors(containerColor = service.color),
             shape = RoundedCornerShape(20),
             modifier = Modifier
                 .fillMaxWidth()
@@ -71,7 +72,7 @@ private fun ServiceCard(
                 Icon(
                     painter = painterResource(service.icon),
                     contentDescription = service.description,
-//                    tint = service.color,
+                    tint = Color.Black,
                     modifier = Modifier.size(60.dp)
                 )
             }

@@ -70,8 +70,8 @@ fun HomeScreen(
             item { BannerCarousel(banners = mockBanners) }
             item { HospitalSection() }
             item { ServicesSection(services = mockServices) }
-
-            items(10) {
+            // Not Decided what to show in this section
+            items(5) {
                 Card(
                     shape = RoundedCornerShape(20),
                     modifier = Modifier

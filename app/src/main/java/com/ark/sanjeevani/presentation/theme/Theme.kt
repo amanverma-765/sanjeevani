@@ -8,7 +8,7 @@ import com.materialkolor.PaletteStyle
 
 @Composable
 fun SanjeevaniTheme(
-    darkTheme: Boolean = false,
+    darkTheme: Boolean = isSystemInDarkTheme(),
     seedColor: Color = Color.Green,
     content: @Composable () -> Unit
 ) {
