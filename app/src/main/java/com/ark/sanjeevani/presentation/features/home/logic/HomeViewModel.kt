@@ -2,10 +2,13 @@ package com.ark.sanjeevani.presentation.features.home.logic
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ark.sanjeevani.domain.model.mockBanners
+import com.ark.sanjeevani.domain.model.mockServices
 import com.ark.sanjeevani.domain.repository.SupabaseRepo
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.onFailure
 import com.skydoves.sandwich.onSuccess
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -26,22 +29,51 @@ class HomeViewModel(private val supabaseRepo: SupabaseRepo) : ViewModel() {
 
     init {
         getAuthenticatedUser()
+        getBanners()
+        getAvailableServices()
+    }
+
+    private fun getAvailableServices() {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isServicesLoading = true) }
+                // Service retrieval logic here
+                val services = mockServices
+                _uiState.update { it.copy(services = services, isServicesLoading = false) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update { it.copy(errorMsg = "Something went wrong while fetching services.", isServicesLoading = false) }
+            }
+        }
+    }
+    private fun getBanners() {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isBannerLoading = true) }
+                // Banner retrieval logic here
+                val banners = mockBanners
+                _uiState.update { it.copy(banners = banners, isBannerLoading = false) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update { it.copy(errorMsg = "Something went wrong while fetching banners.", isBannerLoading = false) }
+            }
+        }
     }
 
     private fun getAuthenticatedUser() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
             try {
+                _uiState.update { it.copy(isUserLoading = true) }
                 supabaseRepo.listenAuthStatus().collectLatest { apiResponse ->
                     apiResponse.onSuccess {
-                        _uiState.update { it.copy(isLoading = false, userInfo = data) }
+                        _uiState.update { it.copy(isUserLoading = false, userInfo = data) }
                     }.onFailure {
-                        _uiState.update { it.copy(isLoading = false, errorMsg = message()) }
+                        _uiState.update { it.copy(isUserLoading = false, errorMsg = message()) }
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                _uiState.update { it.copy(errorMsg = "Something went wrong.", isLoading = false) }
+                _uiState.update { it.copy(errorMsg = "Something went wrong while authenticating user.", isUserLoading = false) }
             }
         }
     }

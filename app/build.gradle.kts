@@ -125,4 +125,5 @@ dependencies {
     implementation(libs.material.kolor)
     implementation(libs.touchlab.kermit)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.compose.shimmer)
 }

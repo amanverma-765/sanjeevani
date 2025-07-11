@@ -25,10 +25,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ark.sanjeevani.R
+import com.ark.sanjeevani.domain.enums.HospitalType
 
 
 @Composable
-fun HospitalSection(modifier: Modifier = Modifier) {
+fun HospitalSection(
+    modifier: Modifier = Modifier,
+    onClick: (hospitalType: HospitalType) -> Unit
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
@@ -36,11 +40,13 @@ fun HospitalSection(modifier: Modifier = Modifier) {
         HospitalCard(
             icon = R.drawable.gov_hospital_icon,
             title = "Gov Hospitals",
+            onClick = { onClick(HospitalType.GOVERNMENT) },
             modifier = Modifier.weight(1f)
         )
         HospitalCard(
             icon = R.drawable.private_hospital_icon,
             title = "Private Hospitals",
+            onClick = { onClick(HospitalType.PRIVATE) },
             modifier = Modifier.weight(1f)
         )
     }
@@ -50,7 +56,8 @@ fun HospitalSection(modifier: Modifier = Modifier) {
 private fun HospitalCard(
     modifier: Modifier = Modifier,
     title: String,
-    icon: Int
+    icon: Int,
+    onClick: () -> Unit
 ) {
     OutlinedCard(
         onClick = {},

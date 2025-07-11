@@ -1,12 +1,12 @@
 package com.ark.sanjeevani.presentation.features.home.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Notifications
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -18,17 +18,17 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil3.ImageLoader
-import coil3.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
+import com.ark.sanjeevani.utils.DefaultImageLoader
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTopBar(
     modifier: Modifier = Modifier,
+    isLoading: Boolean,
     userName: String,
     userProfileUrl: String,
     onNotificationClicked: () -> Unit,
@@ -57,12 +57,10 @@ fun HomeTopBar(
                 ),
                 modifier = Modifier.padding(end = 2.dp, start = 2.dp)
             ) {
-                val profileImage = rememberAsyncImagePainter(
+                if (isLoading) CircularProgressIndicator(Modifier.padding(4.dp))
+                else AsyncImage(
                     model = userProfileUrl,
-                    imageLoader = ImageLoader(LocalContext.current)
-                )
-                Image(
-                    painter = profileImage,
+                    imageLoader = DefaultImageLoader.imageLoader,
                     contentDescription = "Profile image",
                     modifier = Modifier.size(48.dp)
                 )

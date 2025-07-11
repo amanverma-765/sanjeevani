@@ -6,7 +6,7 @@ import coil3.request.CachePolicy
 import coil3.request.crossfade
 
 
-object ImageLoaderProvider {
+object DefaultImageLoader {
     lateinit var imageLoader: ImageLoader
         private set
 

@@ -63,7 +63,8 @@ fun RootNavHost(
             HomeScreen(
                 onNotificationClicked = {
                     navController.navigate(Destinations.Notification)
-                }
+                },
+                onHospitalClicked = {}
             )
         }
 

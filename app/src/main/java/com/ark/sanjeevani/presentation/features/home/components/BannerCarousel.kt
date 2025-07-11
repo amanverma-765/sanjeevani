@@ -1,9 +1,11 @@
 package com.ark.sanjeevani.presentation.features.home.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,9 +17,11 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.rounded.BrokenImage
+import androidx.compose.material.icons.rounded.ImageSearch
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
@@ -28,14 +32,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import com.ark.sanjeevani.domain.model.BannerItem
-import com.ark.sanjeevani.utils.ImageLoaderProvider.imageLoader
+import com.ark.sanjeevani.utils.DefaultImageLoader.imageLoader
+import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.delay
 
 
@@ -43,9 +48,9 @@ import kotlinx.coroutines.delay
 fun BannerCarousel(
     modifier: Modifier = Modifier,
     banners: List<BannerItem>,
+    isLoading: Boolean,
     onClick: () -> Unit
 ) {
-    if (banners.isEmpty()) return
     val pagerState = rememberPagerState(
         initialPage = banners.size * 1000,
         pageCount = { Int.MAX_VALUE }
@@ -61,79 +66,73 @@ fun BannerCarousel(
         }
     }
 
-    Column(modifier = modifier) {
-        HorizontalPager(
-            pageSpacing = 16.dp,
-            beyondViewportPageCount = 1,
-            state = pagerState,
-            modifier = Modifier.fillMaxWidth()
-        ) { page ->
-            val actualPage = page % banners.size
-            val bannerItem = banners[actualPage]
-            var isLoading by remember { mutableStateOf(false) }
-            var isError by remember { mutableStateOf(false) }
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.animateContentSize()
+    ) {
+        if (banners.isEmpty()) BannerPlaceholder(isLoading = isLoading)
+        else {
+            HorizontalPager(
+                pageSpacing = 16.dp,
+                beyondViewportPageCount = 1,
+                state = pagerState,
+                modifier = Modifier.fillMaxWidth()
+            ) { page ->
+                val actualPage = page % banners.size
+                val bannerItem = banners[actualPage]
+                var isImgLoading by remember { mutableStateOf(false) }
+                var isError by remember { mutableStateOf(false) }
 
-            Card(
-                onClick = onClick,
-                shape = RoundedCornerShape(15),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(2f / 1f)
-            ) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    AsyncImage(
-                        model = bannerItem.imageUrl,
-                        imageLoader = imageLoader,
-                        contentDescription = bannerItem.description,
-                        alignment = Alignment.Center,
-                        contentScale = ContentScale.Crop,
-                        onState = { state ->
-                            when (state) {
-                                is AsyncImagePainter.State.Loading -> {
-                                    isError = false
-                                    isLoading = true
-                                }
-
-                                is AsyncImagePainter.State.Error -> {
-                                    isLoading = false
-                                    isError = true
-                                }
-
-                                else -> {
-                                    isLoading = false
-                                    isError = false
-                                }
-                            }
-                        },
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
+                Card(
+                    onClick = onClick,
+                    shape = RoundedCornerShape(15),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(2f / 1f)
+                ) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        if (isError || isImgLoading) BannerPlaceholder(
+                            isLoading = isImgLoading,
+                            isError = isError
                         )
-                    }
+                        AsyncImage(
+                            model = bannerItem.imageUrl,
+                            imageLoader = imageLoader,
+                            contentDescription = bannerItem.description,
+                            alignment = Alignment.Center,
+                            contentScale = ContentScale.Crop,
+                            onState = { state ->
+                                when (state) {
+                                    is AsyncImagePainter.State.Loading -> {
+                                        isError = false
+                                        isImgLoading = true
+                                    }
 
-                    if (isError) {
-                        Image(
-                            imageVector = Icons.Default.Image,
-                            contentDescription = "Error loading image",
-                            modifier = Modifier
-                                .size(50.dp)
-                                .align(Alignment.Center)
+                                    is AsyncImagePainter.State.Error -> {
+                                        isImgLoading = false
+                                        isError = true
+                                    }
+
+                                    else -> {
+                                        isImgLoading = false
+                                        isError = false
+                                    }
+                                }
+                            },
+                            modifier = Modifier.fillMaxSize()
                         )
                     }
                 }
             }
+            DotIndicator(
+                currentPage = pagerState.currentPage,
+                totalDots = banners.size,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp)
+            )
         }
-
-        DotIndicator(
-            currentPage = pagerState.currentPage,
-            totalDots = banners.size,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp)
-        )
     }
 }
 
@@ -162,5 +161,30 @@ private fun DotIndicator(
                 )
             )
         }
+    }
+}
+
+@Composable
+private fun BannerPlaceholder(
+    modifier: Modifier = Modifier,
+    isLoading: Boolean,
+    isError: Boolean = false
+) {
+    Box(
+        modifier = modifier
+            .then(if (isLoading) Modifier.shimmer() else Modifier)
+            .fillMaxWidth()
+            .aspectRatio(2f / 1f)
+            .clip(RoundedCornerShape(15))
+            .background(CardDefaults.cardColors().containerColor),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = if (isError) Icons.Rounded.BrokenImage else Icons.Rounded.ImageSearch,
+            contentDescription = "Error loading image",
+            modifier = Modifier
+                .size(50.dp)
+                .align(Alignment.Center)
+        )
     }
 }
