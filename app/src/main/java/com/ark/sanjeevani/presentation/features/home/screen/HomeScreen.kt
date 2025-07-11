@@ -67,11 +67,16 @@ fun HomeScreen(
             contentPadding = innerPadding.plus(PaddingValues(horizontal = 16.dp, vertical = 8.dp)),
             modifier = modifier.fillMaxSize()
         ) {
-            item { BannerCarousel(banners = mockBanners) }
+            item {
+                BannerCarousel(
+                    banners = mockBanners,
+                    onClick = {}
+                )
+            }
             item { HospitalSection() }
             item { ServicesSection(services = mockServices) }
             // Not Decided what to show in this section
-            items(5) {
+            items(3) {
                 Card(
                     shape = RoundedCornerShape(20),
                     modifier = Modifier
