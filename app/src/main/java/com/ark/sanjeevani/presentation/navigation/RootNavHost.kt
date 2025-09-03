@@ -52,7 +52,11 @@ fun RootNavHost(
         }
 
         composable<Destinations.Login> {
-            LoginScreen()
+            LoginScreen(
+                onLoginSuccessfully = {
+                    navController.navigate(Destinations.Registration)
+                }
+            )
         }
 
         composable<Destinations.Registration> {

@@ -21,8 +21,30 @@ class LoginViewModel(private val authenticationRepo: AuthenticationRepo) : ViewM
     fun onEvent(event: LoginUiEvent) {
         when (event) {
             LoginUiEvent.ClearErrorMsg -> _uiState.update { it.copy(errorMsg = null) }
-            is LoginUiEvent.LoginWithFb -> TODO()
+            is LoginUiEvent.LoginWithFb -> loginWithFb()
             is LoginUiEvent.LoginWithGoogle -> loginWithGoogle(event.context)
+        }
+    }
+
+    init {
+        listenAuthStatus()
+    }
+
+    private fun listenAuthStatus() {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, errorMsg = null) }
+                authenticationRepo.listenAuthStatus().collect { result ->
+                    result.onSuccess {
+                        _uiState.update { it.copy(isLoading = false, isUserLoggedIn = true) }
+                    }.onFailure {
+                        _uiState.update { it.copy(isLoading = false, errorMsg = it.errorMsg) }
+                    }
+                }
+            } catch (e: Exception) {
+                logger.e(e) { "Error fetching login status" }
+                _uiState.update { it.copy(errorMsg = "Something went wrong, try again.") }
+            }
         }
     }
 
@@ -38,7 +60,10 @@ class LoginViewModel(private val authenticationRepo: AuthenticationRepo) : ViewM
                         )
                         loginResult.onFailure { error ->
                             _uiState.update {
-                                it.copy(isLoading = false, errorMsg = "Something went wrong, try again.")
+                                it.copy(
+                                    isLoading = false,
+                                    errorMsg = "Something went wrong, try again."
+                                )
                             }
                         }.onSuccess {
                             _uiState.update { it.copy(isLoading = false, errorMsg = null) }
@@ -47,7 +72,10 @@ class LoginViewModel(private val authenticationRepo: AuthenticationRepo) : ViewM
                     } catch (e: Exception) {
                         logger.e(e) { "Error during backend authentication" }
                         _uiState.update {
-                            it.copy(isLoading = false, errorMsg = "Authentication failed, try again.")
+                            it.copy(
+                                isLoading = false,
+                                errorMsg = "Authentication failed, try again."
+                            )
                         }
                     }
                 },

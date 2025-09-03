@@ -35,6 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = koinViewModel(),
+    onLoginSuccessfully: () -> Unit,
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -44,6 +45,12 @@ fun LoginScreen(
         uiState.errorMsg?.let {
             context.toastShort(it)
             viewModel.onEvent(LoginUiEvent.ClearErrorMsg)
+        }
+    }
+
+    LaunchedEffect(uiState.isUserLoggedIn) {
+        if (uiState.isUserLoggedIn) {
+            onLoginSuccessfully()
         }
     }
 
