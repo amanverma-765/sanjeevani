@@ -17,17 +17,21 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
@@ -41,24 +45,36 @@ import com.ark.sanjeevani.presentation.features.auth.components.GenderDropdownFi
 import com.ark.sanjeevani.presentation.features.auth.components.ProfileImage
 import com.ark.sanjeevani.presentation.features.auth.components.RegistrationTextField
 import com.ark.sanjeevani.presentation.features.auth.components.StateDropdownField
+import com.ark.sanjeevani.presentation.features.auth.logic.RegistrationUiEvent
+import com.ark.sanjeevani.presentation.features.auth.logic.RegistrationViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationScreen(
     modifier: Modifier = Modifier,
-    onRoleSelection: (LoginRole) -> Unit,
-    onCreateAccountClick: () -> Unit
+    viewModel: RegistrationViewModel = koinViewModel(),
+    onRegistrationSuccess: () -> Unit
 ) {
-    var loginRole by remember { mutableStateOf<LoginRole?>(null) }
-    var name by remember { mutableStateOf("") }
-    var dateOfBirth by remember { mutableStateOf("") }
-    var selectedGender by remember { mutableStateOf("") }
-    var mobileNumber by remember { mutableStateOf("") }
-    var selectedState by remember { mutableStateOf("") }
-    var selectedCity by remember { mutableStateOf("") }
-    var acceptTerms by remember { mutableStateOf(false) }
-    var selectedRole by remember { mutableStateOf("") }
+    val uiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Show error messages via snackbar
+    LaunchedEffect(uiState.errorMsg) {
+        uiState.errorMsg?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            viewModel.onEvent(RegistrationUiEvent.ClearErrorMsg)
+        }
+    }
+
+    // Handle successful registration
+    LaunchedEffect(uiState.isFormValid) {
+        if (uiState.isFormValid && !uiState.isLoading && uiState.hasAttemptedSubmit) {
+            // You might want to add a success state in UiState instead
+            // For now, we'll handle navigation here
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -71,7 +87,8 @@ fun RegistrationScreen(
                     )
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         Column(
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -85,6 +102,7 @@ fun RegistrationScreen(
 
             ProfileImage(onClick = {})
 
+            // Role Selection
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -94,8 +112,8 @@ fun RegistrationScreen(
                     title = "User",
                     subTitle = "Track your health\n& consult experts",
                     icon = R.drawable.user_icon,
-                    onClick = { onRoleSelection(LoginRole.INDIVIDUAL) },
-                    selected = loginRole == LoginRole.INDIVIDUAL,
+                    onClick = { viewModel.onEvent(RegistrationUiEvent.UpdateRole(LoginRole.INDIVIDUAL)) },
+                    selected = uiState.selectedRole == LoginRole.INDIVIDUAL,
                     modifier = Modifier.weight(1f)
                 )
 
@@ -103,103 +121,138 @@ fun RegistrationScreen(
                     title = "Health Specialist",
                     subTitle = "Manage patients\n& share expertise",
                     icon = R.drawable.doctor_icon,
-                    onClick = { onRoleSelection(LoginRole.DOCTOR) },
-                    selected = loginRole == LoginRole.DOCTOR,
+                    onClick = { viewModel.onEvent(RegistrationUiEvent.UpdateRole(LoginRole.DOCTOR)) },
+                    selected = uiState.selectedRole == LoginRole.DOCTOR,
                     modifier = Modifier.weight(1f)
+                )
+            }
+
+            // Show role error
+            uiState.roleError?.let { error ->
+                Text(
+                    text = error,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 4.dp)
                 )
             }
 
             // Name Field
             RegistrationTextField(
-                value = name,
-                onValueChange = { name = it },
+                value = uiState.name,
+                onValueChange = { viewModel.onEvent(RegistrationUiEvent.UpdateName(it)) },
                 placeHolder = "Enter your full name",
-                label = "Full Name"
+                label = "Full Name",
+                isError = uiState.nameError != null,
+                errorMessage = uiState.nameError
             )
 
             // Date of Birth Field
             DatePickerField(
-                value = dateOfBirth,
-                onValueChange = { dateOfBirth = it },
+                value = uiState.dateOfBirth,
+                onValueChange = { viewModel.onEvent(RegistrationUiEvent.UpdateDateOfBirth(it)) },
                 placeHolder = "Select your date of birth",
-                label = "Date of Birth"
+                label = "Date of Birth",
+                isError = uiState.dateOfBirthError != null,
+                errorMessage = uiState.dateOfBirthError
             )
 
             // Gender Selection
             GenderDropdownField(
-                selectedGender = selectedGender,
-                onGenderSelected = { selectedGender = it },
-                label = "Gender"
+                selectedGender = uiState.selectedGender,
+                onGenderSelected = { viewModel.onEvent(RegistrationUiEvent.UpdateGender(it)) },
+                label = "Gender",
+                isError = uiState.genderError != null,
+                errorMessage = uiState.genderError
             )
 
             // Mobile Number Field
             RegistrationTextField(
-                value = mobileNumber,
-                onValueChange = { newValue ->
-                    val filteredValue = newValue.filter { it.isDigit() }.take(10)
-                    mobileNumber = filteredValue
-                },
+                value = uiState.mobileNumber,
+                onValueChange = { viewModel.onEvent(RegistrationUiEvent.UpdateMobileNumber(it)) },
                 placeHolder = "Enter 10-digit mobile number",
                 label = "Mobile Number",
                 prefix = "+91 ",
-                keyboardType = KeyboardType.Phone
+                keyboardType = KeyboardType.Phone,
+                isError = uiState.mobileNumberError != null,
+                errorMessage = uiState.mobileNumberError
             )
 
             // State Selection
             StateDropdownField(
-                selectedState = selectedState,
-                onStateSelected = { selectedState = it },
-                label = "State"
+                selectedState = uiState.selectedState,
+                onStateSelected = { viewModel.onEvent(RegistrationUiEvent.UpdateState(it)) },
+                label = "State",
+                isError = uiState.stateError != null,
+                errorMessage = uiState.stateError
             )
 
             // City Selection
             CityDropdownField(
-                selectedCity = selectedCity,
-                onCitySelected = { selectedCity = it },
-                label = "City"
+                selectedCity = uiState.selectedCity,
+                onCitySelected = { viewModel.onEvent(RegistrationUiEvent.UpdateCity(it)) },
+                label = "City",
+                isError = uiState.cityError != null,
+                errorMessage = uiState.cityError
             )
 
             // Terms and Conditions
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Checkbox(
-                    checked = acceptTerms,
-                    onCheckedChange = { acceptTerms = it }
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "I accept the ",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                Text(
-                    text = "Terms and Conditions",
-                    style = MaterialTheme.typography.bodyMedium,
-                    textDecoration = TextDecoration.Underline,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.clickable { /* Handle terms click */ }
-                )
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Checkbox(
+                        checked = uiState.acceptTerms,
+                        onCheckedChange = { viewModel.onEvent(RegistrationUiEvent.UpdateTermsAcceptance(it)) }
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "I accept the ",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Text(
+                        text = "Terms and Conditions",
+                        style = MaterialTheme.typography.bodyMedium,
+                        textDecoration = TextDecoration.Underline,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.clickable { /* Handle terms click */ }
+                    )
+                }
+
+                // Show terms error
+                uiState.termsError?.let { error ->
+                    Text(
+                        text = error,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+                    )
+                }
             }
 
             // Submit Button
             Button(
-                onClick = onCreateAccountClick,
-                enabled = acceptTerms &&
-                    name.isNotBlank() &&
-                    dateOfBirth.isNotBlank() &&
-                    selectedGender.isNotBlank() &&
-                    mobileNumber.isNotBlank() &&
-                    selectedState.isNotBlank() &&
-                    selectedCity.isNotBlank() &&
-                    selectedRole.isNotBlank(),
+                onClick = {
+                    viewModel.onEvent(RegistrationUiEvent.SubmitForm)
+                    if (uiState.isFormValid) {
+                        onRegistrationSuccess()
+                    }
+                },
+                enabled = !uiState.isLoading,
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp)
             ) {
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                }
                 Text(
-                    text = "Create Account",
+                    text = if (uiState.isLoading) "Creating Account..." else "Create Account",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )

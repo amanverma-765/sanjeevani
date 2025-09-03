@@ -33,7 +33,9 @@ fun CityDropdownField(
     modifier: Modifier = Modifier,
     selectedCity: String,
     onCitySelected: (String) -> Unit,
-    label: String
+    label: String,
+    isError: Boolean = false,
+    errorMessage: String? = null
 ) {
     var expanded by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -104,9 +106,10 @@ fun CityDropdownField(
                     }
                 },
                 shape = RoundedCornerShape(12.dp),
+                isError = isError,
                 colors = OutlinedTextFieldDefaults.colors(
-                    disabledBorderColor = OutlinedTextFieldDefaults.colors().unfocusedIndicatorColor,
-                    disabledTextColor =  OutlinedTextFieldDefaults.colors().focusedTextColor
+                    disabledBorderColor = if (isError) MaterialTheme.colorScheme.error else OutlinedTextFieldDefaults.colors().unfocusedIndicatorColor,
+                    disabledTextColor = OutlinedTextFieldDefaults.colors().focusedTextColor
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -144,6 +147,16 @@ fun CityDropdownField(
                     )
                 }
             }
+        }
+
+        // Show error message
+        errorMessage?.let { error ->
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
         }
     }
 }

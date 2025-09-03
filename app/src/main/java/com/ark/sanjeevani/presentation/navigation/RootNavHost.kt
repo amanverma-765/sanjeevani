@@ -64,9 +64,8 @@ fun RootNavHost(
 
         composable<Destinations.Registration> {
             RegistrationScreen(
-                onRoleSelection = {},
-                onCreateAccountClick = {
-                    navController.navigate(Destinations.Home)
+                onRegistrationSuccess = {
+
                 }
             )
         }

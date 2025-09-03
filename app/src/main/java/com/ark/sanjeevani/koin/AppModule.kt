@@ -4,6 +4,7 @@ import com.ark.sanjeevani.presentation.features.auth.logic.AuthViewModel
 import com.ark.sanjeevani.data.remote.SupabaseDb
 import com.ark.sanjeevani.data.repo.SupabaseRepoImpl
 import com.ark.sanjeevani.domain.repository.SupabaseRepo
+import com.ark.sanjeevani.presentation.features.auth.logic.RegistrationViewModel
 import com.ark.sanjeevani.presentation.features.home.logic.HomeViewModel
 import com.ark.sanjeevani.presentation.features.onBoarding.logic.LocalizationViewModel
 import org.koin.core.module.dsl.bind
@@ -17,4 +18,5 @@ val appModule = module {
     singleOf(::SupabaseDb)
     viewModelOf(::HomeViewModel)
     viewModelOf(::AuthViewModel)
+    viewModelOf(::RegistrationViewModel)
 }

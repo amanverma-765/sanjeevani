@@ -26,7 +26,9 @@ fun RegistrationTextField(
     placeHolder: String,
     label: String,
     prefix: String = "",
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    isError: Boolean = false,
+    errorMessage: String? = null
 ) {
     Column(modifier = modifier) {
         Text(
@@ -45,7 +47,7 @@ fun RegistrationTextField(
                 Text(
                     text = placeHolder,
                     style = MaterialTheme.typography.bodyMedium,
-                    color  = OutlinedTextFieldDefaults.colors().disabledTextColor
+                    color = OutlinedTextFieldDefaults.colors().disabledTextColor
                 )
             },
             keyboardOptions = KeyboardOptions(
@@ -53,7 +55,18 @@ fun RegistrationTextField(
                 capitalization = KeyboardCapitalization.Words
             ),
             shape = RoundedCornerShape(12.dp),
+            isError = isError,
             modifier = Modifier.fillMaxWidth()
         )
+
+        // Show error message
+        errorMessage?.let { error ->
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
     }
 }
