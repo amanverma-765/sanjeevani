@@ -2,6 +2,7 @@ package com.ark.sanjeevani.presentation.features.auth.logic.reg
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import com.ark.sanjeevani.domain.enums.LoginRole
 import com.ark.sanjeevani.domain.repository.AuthenticationRepo
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,12 +12,14 @@ import kotlinx.coroutines.launch
 
 class RegistrationViewModel(private val authenticationRepo: AuthenticationRepo) : ViewModel() {
 
+    val logger = Logger.withTag("RegistrationViewModel")
+
     private val _uiState = MutableStateFlow(RegistrationUiState())
     val uiState = _uiState.asStateFlow()
 
     fun onEvent(event: RegistrationUiEvent) {
         when (event) {
-            RegistrationUiEvent.ClearErrorMsg -> _uiState.update { it.copy(errorMsg = null) }
+            RegistrationUiEvent.ClearErrorMsg -> _uiState.update { it.copy(errorMsg = null, authErrorMsg = null) }
             RegistrationUiEvent.ClearValidationErrors -> clearValidationErrors()
             RegistrationUiEvent.SubmitForm -> submitForm()
             RegistrationUiEvent.ValidateForm -> validateForm()
@@ -29,6 +32,28 @@ class RegistrationViewModel(private val authenticationRepo: AuthenticationRepo) 
             is RegistrationUiEvent.UpdateState -> updateState(event.state)
             is RegistrationUiEvent.UpdateCity -> updateCity(event.city)
             is RegistrationUiEvent.UpdateTermsAcceptance -> updateTermsAcceptance(event.accepted)
+        }
+    }
+
+    init {
+        listenAuthStatus()
+    }
+
+    private fun listenAuthStatus() {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, authErrorMsg = null) }
+                authenticationRepo.listenAuthStatus().collect { result ->
+                    result.onSuccess { info ->
+                        _uiState.update { it.copy(isLoading = false, userInfo = info) }
+                    }.onFailure { error ->
+                        _uiState.update { it.copy(isLoading = false, authErrorMsg = error.message) }
+                    }
+                }
+            } catch (e: Exception) {
+                logger.e(e) { "Error fetching login status" }
+                _uiState.update { it.copy(authErrorMsg = "Something went wrong, try again.") }
+            }
         }
     }
 

@@ -1,6 +1,5 @@
 package com.ark.sanjeevani.presentation.features.auth.screen
 
-import android.R.id.message
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +36,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.ark.sanjeevani.R
 import com.ark.sanjeevani.domain.enums.LoginRole
+import com.ark.sanjeevani.presentation.components.LoadingDialog
 import com.ark.sanjeevani.presentation.features.auth.components.UserSelectionCard
 import com.ark.sanjeevani.presentation.features.auth.components.CityDropdownField
 import com.ark.sanjeevani.presentation.features.auth.components.DatePickerField
@@ -55,15 +55,22 @@ import org.koin.androidx.compose.koinViewModel
 fun RegistrationScreen(
     modifier: Modifier = Modifier,
     viewModel: RegistrationViewModel = koinViewModel(),
-    onRegistrationSuccess: () -> Unit
+    onRegCompleted: () -> Unit,
+    onUserNotAuthenticated: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    if (uiState.isLoading) LoadingDialog()
 
-    LaunchedEffect(uiState.errorMsg) {
+    LaunchedEffect(uiState.errorMsg, uiState.authErrorMsg) {
         uiState.errorMsg?.let {
             context.toastShort(it)
             viewModel.onEvent(RegistrationUiEvent.ClearErrorMsg)
+        }
+        uiState.authErrorMsg?.let {
+            context.toastShort(it)
+            viewModel.onEvent(RegistrationUiEvent.ClearErrorMsg)
+            onUserNotAuthenticated()
         }
     }
 
@@ -72,6 +79,7 @@ fun RegistrationScreen(
         if (uiState.isFormValid && !uiState.isLoading && uiState.hasAttemptedSubmit) {
             // You might want to add a success state in UiState instead
             // For now, we'll handle navigation here
+            onRegCompleted()
         }
     }
 
@@ -98,7 +106,10 @@ fun RegistrationScreen(
                 .imePadding()
         ) {
 
-            ProfileImage(onClick = {})
+            ProfileImage(
+                onClick = {},
+                imageUrl = uiState.userInfo?.profileUrl
+            )
 
             // Role Selection
             Row(
@@ -233,9 +244,6 @@ fun RegistrationScreen(
             Button(
                 onClick = {
                     viewModel.onEvent(RegistrationUiEvent.SubmitForm)
-                    if (uiState.isFormValid) {
-                        onRegistrationSuccess()
-                    }
                 },
                 enabled = !uiState.isLoading,
                 shape = RoundedCornerShape(12.dp),

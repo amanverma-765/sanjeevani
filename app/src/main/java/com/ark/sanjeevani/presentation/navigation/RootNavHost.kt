@@ -61,8 +61,15 @@ fun RootNavHost(
 
         composable<Destinations.Registration> {
             RegistrationScreen(
-                onRegistrationSuccess = {
+                onRegCompleted = {
 
+                },
+                onUserNotAuthenticated = {
+                    navController.navigate(Destinations.Login) {
+                        popUpTo(Destinations.Login) {
+                            inclusive = false
+                        }
+                    }
                 }
             )
         }

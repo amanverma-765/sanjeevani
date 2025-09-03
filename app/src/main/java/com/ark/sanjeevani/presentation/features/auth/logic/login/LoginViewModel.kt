@@ -35,10 +35,10 @@ class LoginViewModel(private val authenticationRepo: AuthenticationRepo) : ViewM
             try {
                 _uiState.update { it.copy(isLoading = true, errorMsg = null) }
                 authenticationRepo.listenAuthStatus().collect { result ->
-                    result.onSuccess {
+                    result.onSuccess { info ->
                         _uiState.update { it.copy(isLoading = false, isUserLoggedIn = true) }
-                    }.onFailure {
-                        _uiState.update { it.copy(isLoading = false, errorMsg = it.errorMsg) }
+                    }.onFailure { error ->
+                        _uiState.update { it.copy(isLoading = false, errorMsg = error.message) }
                     }
                 }
             } catch (e: Exception) {
@@ -54,10 +54,7 @@ class LoginViewModel(private val authenticationRepo: AuthenticationRepo) : ViewM
             initiateGoogleOAuth(context).fold(
                 onSuccess = { oauthResult ->
                     try {
-                        val loginResult = authenticationRepo.loginWithGoogle(
-                            oauthResult.idToken,
-                            oauthResult.hashedNonce
-                        )
+                        val loginResult = authenticationRepo.loginWithGoogle(oauthResult.idToken)
                         loginResult.onFailure { error ->
                             _uiState.update {
                                 it.copy(

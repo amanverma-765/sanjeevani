@@ -17,20 +17,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.ark.sanjeevani.R
+import coil3.compose.AsyncImage
+import com.ark.sanjeevani.utils.DefaultImageLoader.imageLoader
 
 @Composable
 fun ProfileImage(
     modifier: Modifier = Modifier,
+    imageUrl: String? = null,
     onClick: () -> Unit
 ) {
-    // Profile Image Section
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxWidth()
@@ -48,11 +48,15 @@ fun ProfileImage(
                 )
                 .clickable { onClick() }
         ) {
-            Image(
-                painter = painterResource(R.drawable.default_profile),
+            AsyncImage(
+                model = imageUrl,
+                imageLoader = imageLoader,
                 contentDescription = "Profile Image",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize().alpha(.5f)
+                placeholder = painterResource(id = com.ark.sanjeevani.R.drawable.default_profile),
+                error = painterResource(id = com.ark.sanjeevani.R.drawable.default_profile),
+                fallback = painterResource(id = com.ark.sanjeevani.R.drawable.default_profile),
+                modifier = Modifier.fillMaxSize()
             )
         }
         Spacer(modifier = Modifier.height(8.dp))

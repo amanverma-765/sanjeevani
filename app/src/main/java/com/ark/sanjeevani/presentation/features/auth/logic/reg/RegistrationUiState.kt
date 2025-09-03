@@ -1,10 +1,15 @@
 package com.ark.sanjeevani.presentation.features.auth.logic.reg
 
 import com.ark.sanjeevani.domain.enums.LoginRole
+import com.ark.sanjeevani.domain.model.LoginUserInfo
 
 data class RegistrationUiState(
     val isLoading: Boolean = false,
     val errorMsg: String? = null,
+
+    // Auth info
+    val userInfo: LoginUserInfo? = null,
+    val authErrorMsg: String? = null,
 
     // Form fields
     val selectedRole: LoginRole? = null,

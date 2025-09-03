@@ -13,7 +13,7 @@ object UserInfoDtoMapper {
         return LoginUserInfo(
             id = this.id,
             name = name,
-            email = this.email ?: "no-email@example.com",
+            email = this.email!!,
             profileUrl = profileUrl
         )
     }
