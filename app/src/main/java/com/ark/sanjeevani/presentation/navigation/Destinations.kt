@@ -18,7 +18,7 @@ sealed interface Destinations {
     data object Login : Destinations
 
     @Serializable
-    data class Registration(val isProfessional: Boolean) : Destinations
+    data object Registration : Destinations
 
     @Serializable
     data object Notification : Destinations
