@@ -53,13 +53,11 @@ fun RootNavHost(
 
         composable<Destinations.Login> {
             LoginScreen(
-                onSuccessFullAuth = {
-                    navController.navigate(Destinations.Home) {
-                        launchSingleTop = true
-                        popUpTo(0) {
-                            inclusive = true
-                        }
-                    }
+                onLoginWithGoogleClick = {
+                    navController.navigate(Destinations.Registration)
+                },
+                onLoginWithFacebookClick = {
+                    navController.navigate(Destinations.Registration)
                 }
             )
         }
