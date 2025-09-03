@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ark.sanjeevani.R
+import com.ark.sanjeevani.presentation.components.LoadingDialog
 import com.ark.sanjeevani.presentation.features.auth.components.OAuthButton
 import com.ark.sanjeevani.presentation.features.auth.logic.login.LoginUiEvent
 import com.ark.sanjeevani.presentation.features.auth.logic.login.LoginViewModel
@@ -40,9 +41,13 @@ fun LoginScreen(
     val context = LocalContext.current
 
     LaunchedEffect(uiState.errorMsg) {
-        uiState.errorMsg?.let { context.toastShort(it) }
-        viewModel.onEvent(LoginUiEvent.ClearErrorMsg)
+        uiState.errorMsg?.let {
+            context.toastShort(it)
+            viewModel.onEvent(LoginUiEvent.ClearErrorMsg)
+        }
     }
+
+    if (uiState.isLoading) LoadingDialog()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

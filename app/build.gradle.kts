@@ -124,4 +124,5 @@ dependencies {
     implementation(libs.touchlab.kermit)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.compose.shimmer)
+    implementation(libs.lottie)
 }

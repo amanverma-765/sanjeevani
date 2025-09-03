@@ -38,13 +38,16 @@ class LoginViewModel(private val authenticationRepo: AuthenticationRepo) : ViewM
                         )
                         loginResult.onFailure { error ->
                             _uiState.update {
-                                it.copy(isLoading = false, errorMsg = error.message)
+                                it.copy(isLoading = false, errorMsg = "Something went wrong, try again.")
                             }
+                        }.onSuccess {
+                            _uiState.update { it.copy(isLoading = false, errorMsg = null) }
+                            logger.i { "Logged in Successfully" }
                         }
                     } catch (e: Exception) {
                         logger.e(e) { "Error during backend authentication" }
                         _uiState.update {
-                            it.copy(isLoading = false, errorMsg = "Authentication failed. Please try again.")
+                            it.copy(isLoading = false, errorMsg = "Authentication failed, try again.")
                         }
                     }
                 },

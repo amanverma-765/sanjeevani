@@ -1,7 +1,6 @@
 package com.ark.sanjeevani.data.remote
 
-import androidx.compose.ui.text.googlefonts.GoogleFont
-import coil3.util.CoilUtils.result
+import co.touchlab.kermit.Logger
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.Google
@@ -10,9 +9,10 @@ import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
-import kotlinx.serialization.json.buildJsonObject
 
 class SupabaseAuth(private val supabaseClient: SupabaseClient) {
+
+    val logger = Logger.withTag("SupabaseAuth")
     fun listenAuthStatus(): Flow<Result<UserInfo>> {
         return supabaseClient.auth.sessionStatus.transform { status ->
             when (status) {
@@ -36,6 +36,7 @@ class SupabaseAuth(private val supabaseClient: SupabaseClient) {
             }
             return Result.success(Unit)
         } catch (e: Exception) {
+            logger.e(e) { "Failed to login with google" }
             Result.failure(e)
         }
     }

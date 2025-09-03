@@ -1,5 +1,6 @@
 package com.ark.sanjeevani.presentation.features.auth.screen
 
+import android.R.id.message
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -59,10 +60,9 @@ fun RegistrationScreen(
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    // Show error messages via toast
     LaunchedEffect(uiState.errorMsg) {
-        uiState.errorMsg?.let { message ->
-            context.toastShort(message)
+        uiState.errorMsg?.let {
+            context.toastShort(it)
             viewModel.onEvent(RegistrationUiEvent.ClearErrorMsg)
         }
     }
