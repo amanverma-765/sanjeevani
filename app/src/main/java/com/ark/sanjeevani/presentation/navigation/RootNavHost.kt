@@ -14,6 +14,7 @@ import com.ark.sanjeevani.presentation.features.auth.screen.RegistrationScreen
 import com.ark.sanjeevani.presentation.features.home.screen.HomeScreen
 import com.ark.sanjeevani.presentation.features.notification.screen.NotificationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.LocalizationScreen
+import com.ark.sanjeevani.presentation.features.onBoarding.screen.OnboardingScreen
 
 
 @Composable
@@ -37,6 +38,14 @@ fun RootNavHost(
         composable<Destinations.Localization> {
             LocalizationScreen(
                 onLanguageSelected = {
+                    navController.navigate(Destinations.Onboarding)
+                }
+            )
+        }
+
+        composable<Destinations.Onboarding> {
+            OnboardingScreen(
+                onFinishClick = {
                     navController.navigate(Destinations.Login)
                 }
             )

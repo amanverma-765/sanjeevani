@@ -9,6 +9,9 @@ sealed interface Destinations {
     data object Localization : Destinations
 
     @Serializable
+    data object Onboarding : Destinations
+
+    @Serializable
     data object Home : Destinations
 
     @Serializable

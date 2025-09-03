@@ -8,13 +8,12 @@ import com.materialkolor.PaletteStyle
 
 @Composable
 fun SanjeevaniTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    seedColor: Color = Color.Green,
+    seedColor: Color = Color.Cyan,
     content: @Composable () -> Unit
 ) {
     DynamicMaterialTheme(
         seedColor = seedColor,
-        isDark = darkTheme,
+        isDark = false,
         animate = true,
         style = PaletteStyle.Vibrant,
         typography = AppTypography,
