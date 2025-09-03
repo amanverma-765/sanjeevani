@@ -1,4 +1,4 @@
-package com.ark.sanjeevani.presentation.features.auth.logic
+package com.ark.sanjeevani.presentation.features.auth.logic.reg
 
 import com.ark.sanjeevani.domain.enums.LoginRole
 

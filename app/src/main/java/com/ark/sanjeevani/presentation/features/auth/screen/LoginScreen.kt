@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -19,19 +21,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ark.sanjeevani.R
 import com.ark.sanjeevani.presentation.features.auth.components.OAuthButton
+import com.ark.sanjeevani.presentation.features.auth.logic.login.LoginUiEvent
+import com.ark.sanjeevani.presentation.features.auth.logic.login.LoginViewModel
 import com.ark.sanjeevani.utils.toastShort
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    onLoginWithGoogleClick: () -> Unit,
-    onLoginWithFacebookClick: () -> Unit
+    viewModel: LoginViewModel = koinViewModel(),
 ) {
 
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
+    LaunchedEffect(uiState.errorMsg) {
+        uiState.errorMsg?.let { context.toastShort(it) }
+        viewModel.onEvent(LoginUiEvent.ClearErrorMsg)
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -77,7 +88,7 @@ fun LoginScreen(
             OAuthButton(
                 onClick = {
                     context.toastShort("Logging in with Google")
-                    onLoginWithGoogleClick()
+                    viewModel.onEvent(LoginUiEvent.LoginWithGoogle(context))
                 },
                 icon = R.drawable.ic_google,
                 text = "Continue with Google"
@@ -87,7 +98,7 @@ fun LoginScreen(
             OAuthButton(
                 onClick = {
                     context.toastShort("Logging in with Facebook")
-                    onLoginWithFacebookClick()
+                    // loginViewModel.onEvent(LoginUiEvent.LoginWithFb(context))
                 },
                 icon = R.drawable.ic_facebook,
                 text = "Continue with Facebook"

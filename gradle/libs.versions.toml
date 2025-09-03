@@ -23,7 +23,6 @@ composeNavigation = "2.9.0-rc01"
 connectivity = "2.2.0"
 supabaseBom = "3.2.2"
 kermit = "2.0.8"
-sandwich = "2.1.2"
 
 
 
@@ -75,8 +74,6 @@ supabase-kt = { module = "io.github.jan-tennert.supabase:supabase-kt" }
 supabase-auth-kt = { module = "io.github.jan-tennert.supabase:auth-kt" }
 supabase-compose-auth = { module = "io.github.jan-tennert.supabase:compose-auth" }
 touchlab-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
-skydoves-sandwich = { module = "com.github.skydoves:sandwich", version.ref = "sandwich" }
-skydoves-sandwich-ktor = { module = "com.github.skydoves:sandwich-ktor", version.ref = "sandwich" }
 
 
 

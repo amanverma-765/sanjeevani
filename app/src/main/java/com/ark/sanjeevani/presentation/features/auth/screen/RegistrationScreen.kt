@@ -43,8 +43,8 @@ import com.ark.sanjeevani.presentation.features.auth.components.GenderDropdownFi
 import com.ark.sanjeevani.presentation.features.auth.components.ProfileImage
 import com.ark.sanjeevani.presentation.features.auth.components.RegistrationTextField
 import com.ark.sanjeevani.presentation.features.auth.components.StateDropdownField
-import com.ark.sanjeevani.presentation.features.auth.logic.RegistrationUiEvent
-import com.ark.sanjeevani.presentation.features.auth.logic.RegistrationViewModel
+import com.ark.sanjeevani.presentation.features.auth.logic.reg.RegistrationUiEvent
+import com.ark.sanjeevani.presentation.features.auth.logic.reg.RegistrationViewModel
 import com.ark.sanjeevani.utils.toastShort
 import org.koin.androidx.compose.koinViewModel
 

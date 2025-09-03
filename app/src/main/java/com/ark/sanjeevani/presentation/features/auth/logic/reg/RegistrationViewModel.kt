@@ -1,15 +1,15 @@
-package com.ark.sanjeevani.presentation.features.auth.logic
+package com.ark.sanjeevani.presentation.features.auth.logic.reg
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ark.sanjeevani.domain.enums.LoginRole
-import com.ark.sanjeevani.domain.repository.SupabaseRepo
+import com.ark.sanjeevani.domain.repository.AuthenticationRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class RegistrationViewModel(private val supabaseRepo: SupabaseRepo) : ViewModel() {
+class RegistrationViewModel(private val authenticationRepo: AuthenticationRepo) : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegistrationUiState())
     val uiState = _uiState.asStateFlow()

@@ -1,21 +1,19 @@
 package com.ark.sanjeevani.presentation.features.home.logic
 
+import android.R.attr.data
+import android.R.id.message
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ark.sanjeevani.domain.model.mockBanners
 import com.ark.sanjeevani.domain.model.mockServices
-import com.ark.sanjeevani.domain.repository.SupabaseRepo
-import com.skydoves.sandwich.message
-import com.skydoves.sandwich.onFailure
-import com.skydoves.sandwich.onSuccess
-import kotlinx.coroutines.delay
+import com.ark.sanjeevani.domain.repository.AuthenticationRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeViewModel(private val supabaseRepo: SupabaseRepo) : ViewModel() {
+class HomeViewModel(private val authenticationRepo: AuthenticationRepo) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
@@ -64,12 +62,12 @@ class HomeViewModel(private val supabaseRepo: SupabaseRepo) : ViewModel() {
         viewModelScope.launch {
             try {
                 _uiState.update { it.copy(isUserLoading = true) }
-                supabaseRepo.listenAuthStatus().collectLatest { apiResponse ->
-                    apiResponse.onSuccess {
-                        _uiState.update { it.copy(isUserLoading = false, userInfo = data) }
-                    }.onFailure {
-                        _uiState.update { it.copy(isUserLoading = false, errorMsg = message()) }
-                    }
+                authenticationRepo.listenAuthStatus().collectLatest { apiResponse ->
+//                    apiResponse.onSuccess {
+//                        _uiState.update { it.copy(isUserLoading = false, userInfo = data) }
+//                    }.onFailure {
+//                        _uiState.update { it.copy(isUserLoading = false, errorMsg = message()) }
+//                    }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -112,8 +112,6 @@ dependencies {
     // Connectivity
     implementation(libs.connectivity.core)
     implementation(libs.connectivity.compose.device)
-    implementation(libs.skydoves.sandwich)
-    implementation(libs.skydoves.sandwich.ktor)
     // Supabase dependencies
     implementation(platform(libs.supabase.bom))
     implementation(libs.supabase.kt)

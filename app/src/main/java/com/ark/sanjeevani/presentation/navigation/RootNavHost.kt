@@ -52,14 +52,7 @@ fun RootNavHost(
         }
 
         composable<Destinations.Login> {
-            LoginScreen(
-                onLoginWithGoogleClick = {
-                    navController.navigate(Destinations.Registration)
-                },
-                onLoginWithFacebookClick = {
-                    navController.navigate(Destinations.Registration)
-                }
-            )
+            LoginScreen()
         }
 
         composable<Destinations.Registration> {
