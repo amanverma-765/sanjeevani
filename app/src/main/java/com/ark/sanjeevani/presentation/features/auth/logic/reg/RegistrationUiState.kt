@@ -1,5 +1,6 @@
 package com.ark.sanjeevani.presentation.features.auth.logic.reg
 
+import com.ark.sanjeevani.domain.enums.Gender
 import com.ark.sanjeevani.domain.enums.LoginRole
 import com.ark.sanjeevani.domain.model.LoginUserInfo
 
@@ -11,11 +12,15 @@ data class RegistrationUiState(
     val userInfo: LoginUserInfo? = null,
     val authErrorMsg: String? = null,
 
+    // Form data
+    val states: List<String> = emptyList(),
+    val cities: List<String> = emptyList(),
+
     // Form fields
     val selectedRole: LoginRole? = null,
     val name: String = "",
     val dateOfBirth: String = "",
-    val selectedGender: String = "",
+    val selectedGender: Gender? = null,
     val mobileNumber: String = "",
     val selectedState: String = "",
     val selectedCity: String = "",

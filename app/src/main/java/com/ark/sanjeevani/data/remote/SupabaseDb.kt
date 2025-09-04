@@ -1,0 +1,59 @@
+package com.ark.sanjeevani.data.remote
+
+import co.touchlab.kermit.Logger
+import com.ark.sanjeevani.data.dto.CityDto
+import com.ark.sanjeevani.data.dto.StatesDto
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.realtime.Column
+
+class SupabaseDb(private val supabaseClient: SupabaseClient) {
+
+    val logger = Logger.withTag("SupabaseDb")
+
+    suspend fun getAllCities(): Result<List<String>> {
+        return try {
+            val response = supabaseClient
+                .from("city")
+                .select() {
+                    order("name", Order.ASCENDING)
+                }
+                .decodeList<CityDto>()
+
+            if (response.isEmpty()) {
+                logger.e { "No cities found" }
+                Result.failure(RuntimeException("No cities found"))
+            } else {
+                logger.i { "Cities fetched successfully: $response" }
+                Result.success(response.map { it.name })
+            }
+        } catch (e: Exception) {
+            logger.e(e) { "Error fetching cities: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
+        }
+    }
+
+    suspend fun getAllStates(): Result<List<String>> {
+        return try {
+            val response = supabaseClient
+                .from("states")
+                .select() {
+                    order("name", Order.ASCENDING)
+                }
+                .decodeList<StatesDto>()
+
+            if (response.isEmpty()) {
+                logger.e { "No states found" }
+                Result.failure(RuntimeException("No states found"))
+            } else {
+                logger.i { "Cities fetched successfully: $response" }
+                Result.success(response.map { it.name })
+            }
+        } catch (e: Exception) {
+            logger.e(e) { "Error fetching cities: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
+        }
+    }
+}

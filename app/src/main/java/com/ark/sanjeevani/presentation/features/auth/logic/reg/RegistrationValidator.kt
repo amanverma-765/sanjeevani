@@ -1,5 +1,6 @@
 package com.ark.sanjeevani.presentation.features.auth.logic.reg
 
+import com.ark.sanjeevani.domain.enums.Gender
 import com.ark.sanjeevani.domain.enums.LoginRole
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -26,9 +27,9 @@ object RegistrationValidator {
         }
     }
 
-    fun validateGender(gender: String): String? {
+    fun validateGender(gender: Gender?): String? {
         return when {
-            gender.isBlank() -> "Gender selection is required"
+            gender == null -> "Gender selection is required"
             else -> null
         }
     }

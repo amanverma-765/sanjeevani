@@ -3,14 +3,19 @@ package com.ark.sanjeevani.presentation.features.auth.logic.reg
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import com.ark.sanjeevani.domain.enums.Gender
 import com.ark.sanjeevani.domain.enums.LoginRole
 import com.ark.sanjeevani.domain.repository.AuthenticationRepo
+import com.ark.sanjeevani.domain.repository.DatabaseRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class RegistrationViewModel(private val authenticationRepo: AuthenticationRepo) : ViewModel() {
+class RegistrationViewModel(
+    private val authenticationRepo: AuthenticationRepo,
+    private val databaseRepo: DatabaseRepo
+) : ViewModel() {
 
     val logger = Logger.withTag("RegistrationViewModel")
 
@@ -37,6 +42,72 @@ class RegistrationViewModel(private val authenticationRepo: AuthenticationRepo) 
 
     init {
         listenAuthStatus()
+        fetchCities()
+        fetchStates()
+    }
+
+    private fun fetchCities() {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, errorMsg = null) }
+                databaseRepo.getAllCities().onSuccess { cities ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            cities = cities,
+                            errorMsg = null
+                        )
+                    }
+                }.onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMsg = error.message ?: "Something went wrong, try again."
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                logger.e(e) { "Error fetching cities: ${e.message}" }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMsg = "Something went wrong, try again."
+                    )
+                }
+            }
+        }
+    }
+
+    private fun fetchStates() {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, errorMsg = null) }
+                databaseRepo.getAllStates().onSuccess { states ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            states = states,
+                            errorMsg = null
+                        )
+                    }
+                }.onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMsg = error.message ?: "Something went wrong, try again."
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                logger.e(e) { "Error fetching states: ${e.message}" }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMsg = "Something went wrong, try again."
+                    )
+                }
+            }
+        }
     }
 
     private fun listenAuthStatus() {
@@ -87,7 +158,7 @@ class RegistrationViewModel(private val authenticationRepo: AuthenticationRepo) 
         validateFormIfAttempted()
     }
 
-    private fun updateGender(gender: String) {
+    private fun updateGender(gender: Gender) {
         _uiState.update {
             it.copy(
                 selectedGender = gender,

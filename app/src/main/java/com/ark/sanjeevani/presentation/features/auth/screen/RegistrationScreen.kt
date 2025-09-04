@@ -4,13 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -130,8 +128,8 @@ fun RegistrationScreen(
                     title = "Health Specialist",
                     subTitle = "Manage patients\n& share expertise",
                     icon = R.drawable.doctor_icon,
-                    onClick = { viewModel.onEvent(RegistrationUiEvent.UpdateRole(LoginRole.DOCTOR)) },
-                    selected = uiState.selectedRole == LoginRole.DOCTOR,
+                    onClick = { viewModel.onEvent(RegistrationUiEvent.UpdateRole(LoginRole.HP)) },
+                    selected = uiState.selectedRole == LoginRole.HP,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -193,7 +191,8 @@ fun RegistrationScreen(
                 onStateSelected = { viewModel.onEvent(RegistrationUiEvent.UpdateState(it)) },
                 label = "State",
                 isError = uiState.stateError != null,
-                errorMessage = uiState.stateError
+                errorMessage = uiState.stateError,
+                stateOptions = uiState.states
             )
 
             // City Selection
@@ -202,7 +201,8 @@ fun RegistrationScreen(
                 onCitySelected = { viewModel.onEvent(RegistrationUiEvent.UpdateCity(it)) },
                 label = "City",
                 isError = uiState.cityError != null,
-                errorMessage = uiState.cityError
+                errorMessage = uiState.cityError,
+                cityOptions = uiState.cities
             )
 
             // Terms and Conditions
@@ -213,9 +213,14 @@ fun RegistrationScreen(
                 ) {
                     Checkbox(
                         checked = uiState.acceptTerms,
-                        onCheckedChange = { viewModel.onEvent(RegistrationUiEvent.UpdateTermsAcceptance(it)) }
+                        onCheckedChange = {
+                            viewModel.onEvent(
+                                RegistrationUiEvent.UpdateTermsAcceptance(
+                                    it
+                                )
+                            )
+                        }
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "I accept the ",
                         style = MaterialTheme.typography.bodyMedium,

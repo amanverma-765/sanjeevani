@@ -35,44 +35,11 @@ fun CityDropdownField(
     onCitySelected: (String) -> Unit,
     label: String,
     isError: Boolean = false,
+    cityOptions: List<String>,
     errorMessage: String? = null
 ) {
     var expanded by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
-    val cityOptions = listOf(
-        // Major Metropolitan Cities
-        "Mumbai", "Delhi", "Bangalore", "Hyderabad", "Ahmedabad", "Chennai",
-        "Kolkata", "Surat", "Pune", "Jaipur", "Lucknow", "Kanpur", "Nagpur",
-        "Indore", "Thane", "Bhopal", "Visakhapatnam", "Pimpri", "Patna", "Vadodara",
-
-        // Additional Major Cities
-        "Agra", "Amritsar", "Aurangabad", "Coimbatore", "Faridabad", "Ghaziabad",
-        "Gurgaon", "Guwahati", "Hubli", "Jabalpur", "Kochi", "Kota", "Kozhikode",
-        "Ludhiana", "Madurai", "Mangalore", "Meerut", "Mysore", "Nashik", "Noida",
-
-        // State Capitals and Important Cities
-        "Agartala", "Aizawl", "Allahabad", "Amravati", "Asansol", "Bareilly",
-        "Belgaum", "Bhavnagar", "Bhilai", "Bhubaneswar", "Bikaner", "Bilaspur",
-        "Chandigarh", "Cuttack", "Dehradun", "Dhanbad", "Durgapur", "Erode",
-        "Gandhinagar", "Gangtok", "Gorakhpur", "Gulbarga", "Guntur", "Gwalior",
-
-        // Regional Centers
-        "Haldwani", "Haridwar", "Hisar", "Howrah", "Imphal", "Itanagar",
-        "Jalandhar", "Jammu", "Jamnagar", "Jamshedpur", "Jodhpur", "Junagadh",
-        "Kakinada", "Kalaburagi", "Kannur", "Karnal", "Kohima", "Kollam",
-        "Korba", "Kurnool", "Latur", "Malappuram", "Malegaon", "Mathura",
-
-        // Growing Cities
-        "Moradabad", "Muzaffarnagar", "Muzaffarpur", "Nanded", "Navi Mumbai",
-        "Nellore", "Panipat", "Patiala", "Puducherry", "Raipur", "Rajahmundry",
-        "Rajkot", "Ranchi", "Rourkela", "Saharanpur", "Salem", "Sangli",
-        "Shimla", "Siliguri", "Solapur", "Srinagar", "Thiruvananthapuram",
-
-        // Tier 2 Cities
-        "Thrissur", "Tiruchirapalli", "Tirunelveli", "Tirupati", "Tiruppur",
-        "Tumkur", "Udaipur", "Ujjain", "Ulhasnagar", "Vadodara", "Vapi",
-        "Varanasi", "Vasai", "Vellore", "Vijayawada", "Warangal", "Yamuna Nagar"
-    ).sorted()
 
     Column(modifier = modifier) {
         Text(

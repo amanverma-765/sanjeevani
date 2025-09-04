@@ -37,17 +37,11 @@ fun StateDropdownField(
     onStateSelected: (String) -> Unit,
     label: String,
     isError: Boolean = false,
+    stateOptions: List<String>,
     errorMessage: String? = null
 ) {
     var expanded by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
-    val stateOptions = listOf(
-        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
-        "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
-        "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
-        "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
-        "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
-    ).sorted()
 
     Column(modifier = modifier) {
         Text(

@@ -26,19 +26,20 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
+import com.ark.sanjeevani.domain.enums.Gender
 
 @Composable
 fun GenderDropdownField(
     modifier: Modifier = Modifier,
-    selectedGender: String,
-    onGenderSelected: (String) -> Unit,
+    selectedGender: Gender?,
+    onGenderSelected: (Gender) -> Unit,
     label: String,
     isError: Boolean = false,
     errorMessage: String? = null
 ) {
     var expanded by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
-    val genderOptions = listOf("Male", "Female", "Other", "Prefer not to say")
+    val genderOptions = Gender.entries
 
     Column(modifier = modifier) {
         Text(
@@ -49,7 +50,7 @@ fun GenderDropdownField(
         )
         Box {
             OutlinedTextField(
-                value = selectedGender,
+                value = selectedGender?.text ?: "",
                 onValueChange = { },
                 readOnly = true,
                 enabled = false,
@@ -98,7 +99,7 @@ fun GenderDropdownField(
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = option,
+                                text = option.text,
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         },
