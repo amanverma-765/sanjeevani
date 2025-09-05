@@ -1,6 +1,7 @@
 package com.ark.sanjeevani.domain.repository
 
 import com.ark.sanjeevani.domain.model.LoginUserInfo
+import com.ark.sanjeevani.domain.model.RegisteredUser
 import kotlinx.coroutines.flow.StateFlow
 
 interface AuthenticationRepo {
@@ -8,5 +9,7 @@ interface AuthenticationRepo {
 
     suspend fun loginWithGoogle(token: String): Result<Unit>
 
-//    fun loginWithFb(): Result<Unit>
+    suspend fun registerNewUser(registeredUser: RegisteredUser): Result<Unit>
+
+    suspend fun getRegisteredUser(email: String): Result<RegisteredUser?>
 }

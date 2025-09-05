@@ -1,8 +1,8 @@
 package com.ark.sanjeevani.data.remote
 
 import co.touchlab.kermit.Logger
+import com.ark.sanjeevani.data.dto.BannerItemDto
 import com.ark.sanjeevani.data.dto.CityDto
-import com.ark.sanjeevani.data.dto.RegisteredUserDto
 import com.ark.sanjeevani.data.dto.StatesDto
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
@@ -56,34 +56,23 @@ class SupabaseDb(private val supabaseClient: SupabaseClient) {
         }
     }
 
-    suspend fun registerNewUser(registeredUserDto: RegisteredUserDto): Result<Unit> {
+    suspend fun getAllBanners(): Result<List<BannerItemDto>> {
         return try {
-            supabaseClient
-                .from("user")
-                .insert(registeredUserDto)
-            return Result.success(Unit)
+            val response = supabaseClient
+                .from("banners")
+                .select()
+                .decodeList<BannerItemDto>()
+
+            if (response.isEmpty()) {
+                logger.e { "No banners found" }
+                Result.failure(RuntimeException("No banners found"))
+            } else {
+                logger.i { "Banners fetched successfully: $response" }
+                Result.success(response)
+            }
         } catch (e: Exception) {
-            logger.e(e) { "Error while registering new user: ${e.message}" }
+            logger.e(e) { "Error fetching banners: ${e.message}" }
             Result.failure(RuntimeException("Something went wrong, try again"))
         }
     }
-
-    suspend fun getRegisteredUser(email: String): Result<RegisteredUserDto?> {
-        return try {
-            val user = supabaseClient
-                .from("user")
-                .select {
-                    filter {
-                        eq("email", email)
-                    }
-                }
-                .decodeList<RegisteredUserDto>()
-            if (user.isEmpty()) Result.failure(RuntimeException("User is not registered")) else Result.success(user.first())
-        } catch (e: Exception) {
-            logger.e(e) { "Error while fetching registered user: ${e.message}" }
-            Result.failure(RuntimeException("Something went wrong, try again"))
-        }
-    }
-
-
 }

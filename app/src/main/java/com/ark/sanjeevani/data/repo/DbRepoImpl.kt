@@ -1,9 +1,8 @@
 package com.ark.sanjeevani.data.repo
 
-import com.ark.sanjeevani.data.mapper.RegisteredUserMapper.toRegisteredUser
-import com.ark.sanjeevani.data.mapper.RegisteredUserMapper.toRegisteredUserDto
+import com.ark.sanjeevani.data.mapper.BannerItemMapper.toBannerItem
 import com.ark.sanjeevani.data.remote.SupabaseDb
-import com.ark.sanjeevani.domain.model.RegisteredUser
+import com.ark.sanjeevani.domain.model.BannerItem
 import com.ark.sanjeevani.domain.repository.DatabaseRepo
 
 class DbRepoImpl(private val supabaseDb: SupabaseDb) : DatabaseRepo {
@@ -15,12 +14,9 @@ class DbRepoImpl(private val supabaseDb: SupabaseDb) : DatabaseRepo {
         return supabaseDb.getAllStates()
     }
 
-    override suspend fun registerNewUser(registeredUser: RegisteredUser): Result<Unit> {
-        return supabaseDb.registerNewUser(registeredUser.toRegisteredUserDto())
+    override suspend fun getAllBanners(): Result<List<BannerItem>> {
+        return supabaseDb.getAllBanners().map { result ->
+            result.map { it.toBannerItem() }
+        }
     }
-
-    override suspend fun getRegisteredUser(email: String): Result<RegisteredUser?> {
-        return supabaseDb.getRegisteredUser(email).map { it?.toRegisteredUser() }
-    }
-
 }

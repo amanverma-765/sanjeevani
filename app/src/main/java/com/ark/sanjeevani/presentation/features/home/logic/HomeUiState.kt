@@ -7,11 +7,14 @@ import com.ark.sanjeevani.domain.model.Service
 
 data class HomeUiState(
     val isUserLoading: Boolean = false,
-    val isBannerLoading: Boolean = false,
     val isServicesLoading: Boolean = false,
     val errorMsg: String? = null,
     val userInfo: LoginUserInfo? = null,
+
     val banners: List<BannerItem> = emptyList(),
+    val isBannerLoading: Boolean = false,
+    val bannerError: String? = null,
+
     val services: List<Service> = emptyList(),
     val registeredUser: RegisteredUser? = null,
     val registrationError: String? = null,

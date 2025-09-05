@@ -1,12 +1,14 @@
 package com.ark.sanjeevani.data.remote
 
 import co.touchlab.kermit.Logger
+import com.ark.sanjeevani.data.dto.RegisteredUserDto
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.auth.providers.builtin.IDToken
 import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
+import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -60,6 +62,35 @@ class SupabaseAuth(private val supabaseClient: SupabaseClient) {
         } catch (e: Exception) {
             logger.e(e) { "Failed to login with google" }
             Result.failure(e)
+        }
+    }
+
+    suspend fun registerNewUser(registeredUserDto: RegisteredUserDto): Result<Unit> {
+        return try {
+            supabaseClient
+                .from("user")
+                .insert(registeredUserDto)
+            return Result.success(Unit)
+        } catch (e: Exception) {
+            logger.e(e) { "Error while registering new user: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
+        }
+    }
+
+    suspend fun getRegisteredUser(email: String): Result<RegisteredUserDto?> {
+        return try {
+            val user = supabaseClient
+                .from("user")
+                .select {
+                    filter {
+                        eq("email", email)
+                    }
+                }
+                .decodeList<RegisteredUserDto>()
+            if (user.isEmpty()) Result.failure(RuntimeException("User is not registered")) else Result.success(user.first())
+        } catch (e: Exception) {
+            logger.e(e) { "Error while fetching registered user: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
         }
     }
 }

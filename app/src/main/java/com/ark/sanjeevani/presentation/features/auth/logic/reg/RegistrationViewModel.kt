@@ -81,7 +81,7 @@ class RegistrationViewModel(
                     city = uiState.value.selectedCity,
                 )
 
-                databaseRepo.registerNewUser(user).onSuccess {
+                authenticationRepo.registerNewUser(user).onSuccess {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -113,7 +113,7 @@ class RegistrationViewModel(
         viewModelScope.launch {
             try {
                 _uiState.update { it.copy(isLoading = true, registrationError = null) }
-                databaseRepo.getRegisteredUser(email).onSuccess { user ->
+                authenticationRepo.getRegisteredUser(email).onSuccess { user ->
                     _uiState.update {
                         it.copy(
                             registeredUser = user,

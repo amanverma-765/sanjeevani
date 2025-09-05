@@ -92,13 +92,16 @@ fun HomeScreen(
             contentPadding = innerPadding.plus(PaddingValues(horizontal = 16.dp, vertical = 8.dp)),
             modifier = modifier.fillMaxSize()
         ) {
-            item {
-                BannerCarousel(
-                    banners = uiState.banners,
-                    isLoading = uiState.isBannerLoading,
-                    onClick = {},
-                )
+            if (uiState.bannerError == null) {
+                item {
+                    BannerCarousel(
+                        banners = uiState.banners,
+                        isLoading = uiState.isBannerLoading,
+                        onClick = {},
+                    )
+                }
             }
+
             item { HospitalSection(onClick = onHospitalClicked) }
             item {
                 ServiceSection(
