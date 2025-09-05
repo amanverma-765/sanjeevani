@@ -1,4 +1,4 @@
-package com.ark.sanjeevani.presentation.components
+package com.ark.sanjeevani.utils
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -11,7 +11,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import com.ark.sanjeevani.utils.NetworkState
 
 @Composable
 fun NetworkStatusDialog(

@@ -9,15 +9,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class NetworkViewModel(
-    private val connectivity: Connectivity
-) : ViewModel() {
+class NetworkViewModel() : ViewModel() {
+
+    val connectivity = Connectivity()
 
     private val _networkState = MutableStateFlow(NetworkState())
     val networkState: StateFlow<NetworkState> = _networkState.asStateFlow()
 
     init {
         viewModelScope.launch {
+            connectivity.start()
             connectivity.statusUpdates.collect { status ->
                 val wasConnected = _networkState.value.isConnected
                 val isConnected = when (status) {

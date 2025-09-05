@@ -13,16 +13,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ark.sanjeevani.presentation.components.NetworkStatusDialog
+import com.ark.sanjeevani.utils.NetworkStatusDialog
 import com.ark.sanjeevani.presentation.navigation.Destinations
 import com.ark.sanjeevani.presentation.navigation.RootNavHost
 import com.ark.sanjeevani.presentation.theme.SanjeevaniTheme
 import com.ark.sanjeevani.utils.NetworkViewModel
-import dev.jordond.connectivity.Connectivity
 
 class MainActivity : ComponentActivity() {
-    private lateinit var connectivity: Connectivity
-
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         enableEdgeToEdge(
@@ -30,18 +27,9 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.light(TRANSPARENT, TRANSPARENT)
         )
         super.onCreate(savedInstanceState)
-        connectivity = Connectivity()
-
         setContent {
-            val networkViewModel: NetworkViewModel = viewModel {
-                NetworkViewModel(connectivity)
-            }
+            val networkViewModel: NetworkViewModel = viewModel()
             val networkState by networkViewModel.networkState.collectAsState()
-
-            LaunchedEffect(Unit) {
-                connectivity.start()
-            }
-
             SanjeevaniTheme {
                 Surface(Modifier.fillMaxSize()) {
                     Box {
@@ -56,14 +44,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        // Clean up connectivity monitoring
-        if (::connectivity.isInitialized) {
-            connectivity.stop()
         }
     }
 }

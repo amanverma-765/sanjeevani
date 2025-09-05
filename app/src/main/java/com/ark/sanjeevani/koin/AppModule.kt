@@ -10,6 +10,8 @@ import com.ark.sanjeevani.domain.repository.DatabaseRepo
 import com.ark.sanjeevani.presentation.features.auth.logic.reg.RegistrationViewModel
 import com.ark.sanjeevani.presentation.features.home.logic.HomeViewModel
 import com.ark.sanjeevani.presentation.features.onBoarding.logic.LocalizationViewModel
+import com.ark.sanjeevani.utils.NetworkViewModel
+import dev.jordond.connectivity.Connectivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -32,4 +34,5 @@ val appModule = module {
     viewModelOf(::RegistrationViewModel)
     singleOf(::SupabaseDb)
     singleOf(::DbRepoImpl) { bind<DatabaseRepo>()}
+    viewModelOf(::NetworkViewModel)
 }

@@ -13,6 +13,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +30,7 @@ import com.ark.sanjeevani.presentation.features.home.components.HospitalSection
 import com.ark.sanjeevani.presentation.features.home.components.ServiceSection
 import com.ark.sanjeevani.presentation.features.home.logic.HomeUiEvent
 import com.ark.sanjeevani.presentation.features.home.logic.HomeViewModel
+import com.ark.sanjeevani.utils.NetworkViewModel
 import com.ark.sanjeevani.utils.plus
 import com.ark.sanjeevani.utils.toastShort
 import org.koin.androidx.compose.koinViewModel
@@ -42,10 +44,12 @@ fun HomeScreen(
     onNotificationClicked: () -> Unit,
     onNavigateToRegistration: () -> Unit,
     onNavigateToLoginScreen: () -> Unit,
+    networkVM: NetworkViewModel = viewModel(),
     onHospitalClicked: (hospitalType: HospitalType) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val networkState by networkVM.networkState.collectAsState()
 
     LaunchedEffect(uiState.errorMsg, uiState.authError) {
         uiState.errorMsg?.let { errorMsg ->
@@ -53,7 +57,9 @@ fun HomeScreen(
             viewModel.onEvent(HomeUiEvent.ClearErrorMsg)
         }
         uiState.authError?.let {
-            onNavigateToLoginScreen()
+            if (networkState.isConnected) {
+                onNavigateToLoginScreen()
+            }
         }
     }
 
@@ -65,7 +71,9 @@ fun HomeScreen(
 
     LaunchedEffect(uiState.registeredUser, uiState.registrationError) {
         if (uiState.registeredUser == null && uiState.registrationError != null) {
-            onNavigateToRegistration()
+            if (networkState.isConnected) {
+                onNavigateToRegistration()
+            }
         }
     }
 
