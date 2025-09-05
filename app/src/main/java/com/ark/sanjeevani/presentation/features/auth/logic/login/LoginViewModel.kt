@@ -4,17 +4,22 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import coil3.util.CoilUtils.result
 import com.ark.sanjeevani.domain.repository.AuthenticationRepo
 import com.ark.sanjeevani.utils.initiateGoogleOAuth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val authenticationRepo: AuthenticationRepo) : ViewModel() {
 
     val logger = Logger.withTag("LoginViewModel")
-
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -31,22 +36,35 @@ class LoginViewModel(private val authenticationRepo: AuthenticationRepo) : ViewM
     }
 
     private fun listenAuthStatus() {
-        viewModelScope.launch {
-            try {
-                _uiState.update { it.copy(isLoading = true, errorMsg = null) }
-                authenticationRepo.listenAuthStatus().collect { result ->
-                    result.onSuccess { info ->
-                        _uiState.update { it.copy(isLoading = false, isUserLoggedIn = true) }
-                    }.onFailure { error ->
-                        _uiState.update { it.copy(isLoading = false, errorMsg = error.message) }
-                    }
+        authenticationRepo.authState
+            .onEach { result ->
+                _uiState.update { state ->
+                    result.fold(
+                        onSuccess = { userInfo ->
+                            state.copy(
+                                isLoading = false,
+                                userState = userInfo,
+                                errorMsg = null
+                            )
+                        },
+                        onFailure = { error ->
+                            state.copy(
+                                isLoading = false,
+                                errorMsg = error.message
+                            )
+                        }
+                    )
                 }
-            } catch (e: Exception) {
-                logger.e(e) { "Error fetching login status" }
-                _uiState.update { it.copy(errorMsg = "Something went wrong, try again.") }
             }
-        }
+            .catch { e ->
+                logger.e(e) { "Error fetching login status" }
+                _uiState.update {
+                    it.copy(isLoading = false, errorMsg = "Something went wrong, try again.")
+                }
+            }
+            .launchIn(viewModelScope)
     }
+
 
     private fun loginWithGoogle(context: Context) {
         viewModelScope.launch {

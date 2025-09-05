@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
             SanjeevaniTheme {
                 Surface(Modifier.fillMaxSize()) {
                     RootNavHost(
-                        startDestination = Destinations.Registration
+                        startDestination = Destinations.Localization
                     )
                 }
             }

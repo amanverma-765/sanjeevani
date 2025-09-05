@@ -75,8 +75,18 @@ fun RegistrationScreen(
     // Handle successful registration
     LaunchedEffect(uiState.isFormValid) {
         if (uiState.isFormValid && !uiState.isLoading && uiState.hasAttemptedSubmit) {
-            // You might want to add a success state in UiState instead
-            // For now, we'll handle navigation here
+            onRegCompleted()
+        }
+    }
+
+    LaunchedEffect(uiState.userInfo) {
+        uiState.userInfo?.let {
+            viewModel.onEvent(RegistrationUiEvent.GetRegisteredUser(it.email))
+        }
+    }
+
+    LaunchedEffect(uiState.registeredUser) {
+        uiState.registeredUser?.let {
             onRegCompleted()
         }
     }
@@ -128,8 +138,8 @@ fun RegistrationScreen(
                     title = "Health Specialist",
                     subTitle = "Manage patients\n& share expertise",
                     icon = R.drawable.doctor_icon,
-                    onClick = { viewModel.onEvent(RegistrationUiEvent.UpdateRole(LoginRole.HP)) },
-                    selected = uiState.selectedRole == LoginRole.HP,
+                    onClick = { viewModel.onEvent(RegistrationUiEvent.UpdateRole(LoginRole.HS)) },
+                    selected = uiState.selectedRole == LoginRole.HS,
                     modifier = Modifier.weight(1f)
                 )
             }

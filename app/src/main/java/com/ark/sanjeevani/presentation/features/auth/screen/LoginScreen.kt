@@ -37,9 +37,9 @@ fun LoginScreen(
     viewModel: LoginViewModel = koinViewModel(),
     onLoginSuccessfully: () -> Unit,
 ) {
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    if (uiState.isLoading) LoadingDialog()
 
     LaunchedEffect(uiState.errorMsg) {
         uiState.errorMsg?.let {
@@ -48,13 +48,11 @@ fun LoginScreen(
         }
     }
 
-    LaunchedEffect(uiState.isUserLoggedIn) {
-        if (uiState.isUserLoggedIn) {
+    LaunchedEffect(uiState.userState) {
+        if (uiState.userState != null) {
             onLoginSuccessfully()
         }
     }
-
-    if (uiState.isLoading) LoadingDialog()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

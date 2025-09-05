@@ -5,14 +5,30 @@ import com.ark.sanjeevani.data.mapper.UserInfoDtoMapper.toLoginUserInfo
 import com.ark.sanjeevani.data.remote.SupabaseAuth
 import com.ark.sanjeevani.domain.model.LoginUserInfo
 import com.ark.sanjeevani.domain.repository.AuthenticationRepo
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
-class AuthRepoImpl(private val supabaseAuth: SupabaseAuth) : AuthenticationRepo {
-    override fun listenAuthStatus(): Flow<Result<LoginUserInfo?>> {
-        return supabaseAuth.listenAuthStatus()
-            .map { response -> response.map { it?.toLoginUserInfo() } }
-    }
+class AuthRepoImpl(
+    private val supabaseAuth: SupabaseAuth,
+    externalScope: CoroutineScope
+) : AuthenticationRepo {
+
+    override val authState: StateFlow<Result<LoginUserInfo?>> =
+        supabaseAuth.authState
+            .map { result ->
+                result.fold(
+                    onSuccess = { user -> Result.success(user?.toLoginUserInfo()) },
+                    onFailure = { e -> Result.failure(e) }
+                )
+            }
+            .stateIn(
+                scope = externalScope,
+                started = SharingStarted.Eagerly,
+                initialValue = Result.success(null)
+            )
 
     override suspend fun loginWithGoogle(token: String): Result<Unit> {
         return supabaseAuth.loginWithGoogle(token)

@@ -17,4 +17,6 @@ sealed interface RegistrationUiEvent {
     data class UpdateState(val state: String) : RegistrationUiEvent
     data class UpdateCity(val city: String) : RegistrationUiEvent
     data class UpdateTermsAcceptance(val accepted: Boolean) : RegistrationUiEvent
+
+    data class GetRegisteredUser(val email: String): RegistrationUiEvent
 }

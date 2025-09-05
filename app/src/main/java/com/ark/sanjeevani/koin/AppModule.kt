@@ -10,12 +10,20 @@ import com.ark.sanjeevani.domain.repository.DatabaseRepo
 import com.ark.sanjeevani.presentation.features.auth.logic.reg.RegistrationViewModel
 import com.ark.sanjeevani.presentation.features.home.logic.HomeViewModel
 import com.ark.sanjeevani.presentation.features.onBoarding.logic.LocalizationViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val appModule = module {
+
+    single<CoroutineScope> {
+        CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    }
+
     viewModelOf(::LocalizationViewModel)
     singleOf(::AuthRepoImpl) { bind<AuthenticationRepo>() }
     singleOf(::SupabaseAuth)

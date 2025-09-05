@@ -2,12 +2,11 @@ package com.ark.sanjeevani.data.remote
 
 import co.touchlab.kermit.Logger
 import com.ark.sanjeevani.data.dto.CityDto
+import com.ark.sanjeevani.data.dto.RegisteredUserDto
 import com.ark.sanjeevani.data.dto.StatesDto
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
-import io.github.jan.supabase.realtime.Column
 
 class SupabaseDb(private val supabaseClient: SupabaseClient) {
 
@@ -56,4 +55,35 @@ class SupabaseDb(private val supabaseClient: SupabaseClient) {
             Result.failure(RuntimeException("Something went wrong, try again"))
         }
     }
+
+    suspend fun registerNewUser(registeredUserDto: RegisteredUserDto): Result<Unit> {
+        return try {
+            supabaseClient
+                .from("user")
+                .insert(registeredUserDto)
+            return Result.success(Unit)
+        } catch (e: Exception) {
+            logger.e(e) { "Error while registering new user: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
+        }
+    }
+
+    suspend fun getRegisteredUser(email: String): Result<RegisteredUserDto?> {
+        return try {
+            val user = supabaseClient
+                .from("user")
+                .select {
+                    filter {
+                        eq("email", email)
+                    }
+                }
+                .decodeList<RegisteredUserDto>()
+            if (user.isEmpty()) Result.success(null) else Result.success(user.first())
+        } catch (e: Exception) {
+            logger.e(e) { "Error while fetching registered user: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
+        }
+    }
+
+
 }

@@ -5,12 +5,22 @@ import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import com.ark.sanjeevani.domain.enums.Gender
 import com.ark.sanjeevani.domain.enums.LoginRole
+import com.ark.sanjeevani.domain.model.RegisteredUser
 import com.ark.sanjeevani.domain.repository.AuthenticationRepo
 import com.ark.sanjeevani.domain.repository.DatabaseRepo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class RegistrationViewModel(
     private val authenticationRepo: AuthenticationRepo,
@@ -24,7 +34,13 @@ class RegistrationViewModel(
 
     fun onEvent(event: RegistrationUiEvent) {
         when (event) {
-            RegistrationUiEvent.ClearErrorMsg -> _uiState.update { it.copy(errorMsg = null, authErrorMsg = null) }
+            RegistrationUiEvent.ClearErrorMsg -> _uiState.update {
+                it.copy(
+                    errorMsg = null,
+                    authErrorMsg = null
+                )
+            }
+
             RegistrationUiEvent.ClearValidationErrors -> clearValidationErrors()
             RegistrationUiEvent.SubmitForm -> submitForm()
             RegistrationUiEvent.ValidateForm -> validateForm()
@@ -37,6 +53,7 @@ class RegistrationViewModel(
             is RegistrationUiEvent.UpdateState -> updateState(event.state)
             is RegistrationUiEvent.UpdateCity -> updateCity(event.city)
             is RegistrationUiEvent.UpdateTermsAcceptance -> updateTermsAcceptance(event.accepted)
+            is RegistrationUiEvent.GetRegisteredUser -> getRegisteredUser(event.email)
         }
     }
 
@@ -44,6 +61,83 @@ class RegistrationViewModel(
         listenAuthStatus()
         fetchCities()
         fetchStates()
+    }
+
+    @OptIn(ExperimentalTime::class)
+    private fun registerNewUser() {
+        viewModelScope.launch {
+            try {
+                val user = RegisteredUser(
+                    email = uiState.value.userInfo?.email!!,
+                    name = uiState.value.name,
+                    createdAt = Clock.System.now().toString(),
+                    dob = uiState.value.dateOfBirth,
+                    phone = uiState.value.mobileNumber,
+                    avatar = uiState.value.userInfo?.profileUrl,
+                    countryCode = "+91",
+                    role = uiState.value.selectedRole!!,
+                    gender = uiState.value.selectedGender!!,
+                    state = uiState.value.selectedState,
+                    city = uiState.value.selectedCity,
+                )
+                _uiState.update { it.copy(isLoading = true, registrationError = null) }
+                databaseRepo.registerNewUser(user).onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            registrationError = null
+                        )
+                    }
+                }.onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            registrationError = error.message ?: "Something went wrong, try again."
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                logger.e(e) { "Error registering new user: ${e.message}" }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        registrationError = "Something went wrong, try again."
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getRegisteredUser(email: String) {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true, registrationError = null) }
+                databaseRepo.getRegisteredUser(email).onSuccess { user ->
+                    _uiState.update {
+                        it.copy(
+                            registeredUser = user,
+                            isLoading = false,
+                            registrationError = null
+                        )
+                    }
+                }.onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            registrationError = error.message ?: "Something went wrong, try again."
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                logger.e(e) { "Error fetching registered user: ${e.message}" }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        registrationError = "Something went wrong, try again."
+                    )
+                }
+            }
+        }
     }
 
     private fun fetchCities() {
@@ -111,21 +205,33 @@ class RegistrationViewModel(
     }
 
     private fun listenAuthStatus() {
-        viewModelScope.launch {
-            try {
-                _uiState.update { it.copy(isLoading = true, authErrorMsg = null) }
-                authenticationRepo.listenAuthStatus().collect { result ->
-                    result.onSuccess { info ->
-                        _uiState.update { it.copy(isLoading = false, userInfo = info) }
-                    }.onFailure { error ->
-                        _uiState.update { it.copy(isLoading = false, authErrorMsg = error.message) }
-                    }
+        authenticationRepo.authState
+            .onEach { result ->
+                _uiState.update { state ->
+                    result.fold(
+                        onSuccess = { userInfo ->
+                            state.copy(
+                                userInfo = userInfo,
+                                isLoading = false,
+                                errorMsg = null
+                            )
+                        },
+                        onFailure = { error ->
+                            state.copy(
+                                isLoading = false,
+                                errorMsg = error.message
+                            )
+                        }
+                    )
                 }
-            } catch (e: Exception) {
-                logger.e(e) { "Error fetching login status" }
-                _uiState.update { it.copy(authErrorMsg = "Something went wrong, try again.") }
             }
-        }
+            .catch { e ->
+                logger.e(e) { "Error fetching login status" }
+                _uiState.update {
+                    it.copy(isLoading = false, errorMsg = "Something went wrong, try again.")
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun updateRole(role: LoginRole) {
@@ -152,7 +258,9 @@ class RegistrationViewModel(
         _uiState.update {
             it.copy(
                 dateOfBirth = dateOfBirth,
-                dateOfBirthError = if (it.hasAttemptedSubmit) RegistrationValidator.validateDateOfBirth(dateOfBirth) else null
+                dateOfBirthError = if (it.hasAttemptedSubmit) RegistrationValidator.validateDateOfBirth(
+                    dateOfBirth
+                ) else null
             )
         }
         validateFormIfAttempted()
@@ -174,7 +282,9 @@ class RegistrationViewModel(
         _uiState.update {
             it.copy(
                 mobileNumber = filteredNumber,
-                mobileNumberError = if (it.hasAttemptedSubmit) RegistrationValidator.validateMobileNumber(filteredNumber) else null
+                mobileNumberError = if (it.hasAttemptedSubmit) RegistrationValidator.validateMobileNumber(
+                    filteredNumber
+                ) else null
             )
         }
         validateFormIfAttempted()
@@ -206,7 +316,9 @@ class RegistrationViewModel(
         _uiState.update {
             it.copy(
                 acceptTerms = accepted,
-                termsError = if (it.hasAttemptedSubmit) RegistrationValidator.validateTermsAcceptance(accepted) else null
+                termsError = if (it.hasAttemptedSubmit) RegistrationValidator.validateTermsAcceptance(
+                    accepted
+                ) else null
             )
         }
         validateFormIfAttempted()
@@ -233,7 +345,8 @@ class RegistrationViewModel(
         val nameError = RegistrationValidator.validateName(currentState.name)
         val dateOfBirthError = RegistrationValidator.validateDateOfBirth(currentState.dateOfBirth)
         val genderError = RegistrationValidator.validateGender(currentState.selectedGender)
-        val mobileNumberError = RegistrationValidator.validateMobileNumber(currentState.mobileNumber)
+        val mobileNumberError =
+            RegistrationValidator.validateMobileNumber(currentState.mobileNumber)
         val stateError = RegistrationValidator.validateState(currentState.selectedState)
         val cityError = RegistrationValidator.validateCity(currentState.selectedCity)
         val roleError = RegistrationValidator.validateRole(currentState.selectedRole)
@@ -268,25 +381,17 @@ class RegistrationViewModel(
 
     private fun submitForm() {
         validateForm()
-
         if (_uiState.value.isFormValid) {
             viewModelScope.launch {
                 _uiState.update { it.copy(isLoading = true) }
-
                 try {
-                    // Here you would implement the actual registration logic
-                    // using supabaseRepo or your preferred method
-
-                    // For now, just simulate success
+                    registerNewUser()
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             errorMsg = null
                         )
                     }
-
-                    // You can add a success callback or navigation logic here
-
                 } catch (e: Exception) {
                     _uiState.update {
                         it.copy(

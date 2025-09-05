@@ -62,7 +62,7 @@ class HomeViewModel(private val authenticationRepo: AuthenticationRepo) : ViewMo
         viewModelScope.launch {
             try {
                 _uiState.update { it.copy(isUserLoading = true) }
-                authenticationRepo.listenAuthStatus().collectLatest { apiResponse ->
+                authenticationRepo.authState.collectLatest { apiResponse ->
 //                    apiResponse.onSuccess {
 //                        _uiState.update { it.copy(isUserLoading = false, userInfo = data) }
 //                    }.onFailure {

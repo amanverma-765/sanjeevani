@@ -1,12 +1,8 @@
 package com.ark.sanjeevani.presentation.navigation
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ark.sanjeevani.presentation.features.auth.screen.LoginScreen
@@ -15,6 +11,8 @@ import com.ark.sanjeevani.presentation.features.home.screen.HomeScreen
 import com.ark.sanjeevani.presentation.features.notification.screen.NotificationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.LocalizationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.OnboardingScreen
+import com.ark.sanjeevani.utils.AnimatedNavHost
+import com.ark.sanjeevani.utils.safePopBackStack
 
 
 @Composable
@@ -22,16 +20,11 @@ fun RootNavHost(
     modifier: Modifier = Modifier,
     startDestination: Destinations
 ) {
-
     val navController = rememberNavController()
 
-    NavHost(
+    AnimatedNavHost(
         navController = navController,
         startDestination = startDestination,
-        enterTransition = { slideInHorizontally(tween(500)) { it } },
-        exitTransition = { slideOutHorizontally(tween(500)) { -it } },
-        popEnterTransition = { slideInHorizontally(tween(500)) { -it } },
-        popExitTransition = { slideOutHorizontally(tween(500)) { it } },
         modifier = modifier.fillMaxSize()
     ) {
 
@@ -46,7 +39,10 @@ fun RootNavHost(
         composable<Destinations.Onboarding> {
             OnboardingScreen(
                 onFinishClick = {
-                    navController.navigate(Destinations.Login)
+                    navController.navigate(Destinations.Login) {
+                        popUpTo(0) { inclusive = true } // clear everything
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -54,7 +50,10 @@ fun RootNavHost(
         composable<Destinations.Login> {
             LoginScreen(
                 onLoginSuccessfully = {
-                    navController.navigate(Destinations.Registration)
+                    navController.navigate(Destinations.Registration) {
+                        popUpTo(0) { inclusive = true } // clear everything
+                        launchSingleTop = true
+                    }
                 }
             )
         }
@@ -62,13 +61,15 @@ fun RootNavHost(
         composable<Destinations.Registration> {
             RegistrationScreen(
                 onRegCompleted = {
-
+                    navController.navigate(Destinations.Home) {
+                        popUpTo(0) { inclusive = true } // clear everything
+                        launchSingleTop = true
+                    }
                 },
                 onUserNotAuthenticated = {
                     navController.navigate(Destinations.Login) {
-                        popUpTo(Destinations.Login) {
-                            inclusive = false
-                        }
+                        popUpTo(0) { inclusive = true } // clear everything
+                        launchSingleTop = true
                     }
                 }
             )
@@ -85,9 +86,8 @@ fun RootNavHost(
 
         composable<Destinations.Notification> {
             NotificationScreen(
-                onBackClicked = { navController.navigateUp() }
+                onBackClicked = { navController.safePopBackStack() }
             )
         }
-
     }
 }
