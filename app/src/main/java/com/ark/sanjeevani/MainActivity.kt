@@ -9,17 +9,20 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ark.sanjeevani.presentation.components.NetworkStatusDialog
 import com.ark.sanjeevani.presentation.navigation.Destinations
 import com.ark.sanjeevani.presentation.navigation.RootNavHost
 import com.ark.sanjeevani.presentation.theme.SanjeevaniTheme
+import com.ark.sanjeevani.utils.NetworkViewModel
 import dev.jordond.connectivity.Connectivity
 
 class MainActivity : ComponentActivity() {
     private lateinit var connectivity: Connectivity
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         enableEdgeToEdge(
@@ -28,17 +31,28 @@ class MainActivity : ComponentActivity() {
         )
         super.onCreate(savedInstanceState)
         connectivity = Connectivity()
+
         setContent {
+            val networkViewModel: NetworkViewModel = viewModel {
+                NetworkViewModel(connectivity)
+            }
+            val networkState by networkViewModel.networkState.collectAsState()
+
             LaunchedEffect(Unit) {
                 connectivity.start()
             }
+
             SanjeevaniTheme {
                 Surface(Modifier.fillMaxSize()) {
                     Box {
-                        RootNavHost(
-                            startDestination = Destinations.Home
+                        key(networkState.reconnectionCount) {
+                            RootNavHost(
+                                startDestination = Destinations.Home
+                            )
+                        }
+                        NetworkStatusDialog(
+                            networkState = networkState
                         )
-                        NetworkStatusDialog(connectivity = connectivity)
                     }
                 }
             }
@@ -53,4 +67,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-

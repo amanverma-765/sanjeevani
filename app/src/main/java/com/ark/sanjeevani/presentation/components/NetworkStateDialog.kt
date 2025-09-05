@@ -11,25 +11,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import dev.jordond.connectivity.Connectivity
+import com.ark.sanjeevani.utils.NetworkState
 
 @Composable
 fun NetworkStatusDialog(
     modifier: Modifier = Modifier,
-    connectivity: Connectivity
+    networkState: NetworkState
 ) {
-    var isConnected by remember { mutableStateOf(true) }
-
-    LaunchedEffect(connectivity) {
-        connectivity.statusUpdates.collect { status ->
-            isConnected = when (status) {
-                is Connectivity.Status.Connected -> true
-                is Connectivity.Status.Disconnected -> false
-            }
-        }
-    }
-
-    if (!isConnected) {
+    if (!networkState.isConnected) {
         AlertDialog(
             modifier = modifier,
             onDismissRequest = { /* Non-dismissable */ },
