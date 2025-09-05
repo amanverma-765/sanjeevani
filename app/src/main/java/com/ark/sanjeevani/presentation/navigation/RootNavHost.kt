@@ -50,7 +50,7 @@ fun RootNavHost(
         composable<Destinations.Login> {
             LoginScreen(
                 onLoginSuccessfully = {
-                    navController.navigate(Destinations.Registration) {
+                    navController.navigate(Destinations.Home) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }

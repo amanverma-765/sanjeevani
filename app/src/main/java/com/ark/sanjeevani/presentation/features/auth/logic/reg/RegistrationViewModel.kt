@@ -80,12 +80,13 @@ class RegistrationViewModel(
                     state = uiState.value.selectedState,
                     city = uiState.value.selectedCity,
                 )
-                _uiState.update { it.copy(isLoading = true, registrationError = null) }
+
                 databaseRepo.registerNewUser(user).onSuccess {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            registrationError = null
+                            registrationError = null,
+                            isRegistrationComplete = true // Add this flag
                         )
                     }
                 }.onFailure { error ->
@@ -117,14 +118,17 @@ class RegistrationViewModel(
                         it.copy(
                             registeredUser = user,
                             isLoading = false,
-                            registrationError = null
+                            registrationError = null,
+                            isRegistrationComplete = user != null // User exists, registration complete
                         )
                     }
                 }.onFailure { error ->
+                    // User not found - this is expected for new users
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            registrationError = error.message ?: "Something went wrong, try again."
+                            registrationError = null, // Don't show error for user not found
+                            registeredUser = null
                         )
                     }
                 }
@@ -133,7 +137,8 @@ class RegistrationViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        registrationError = "Something went wrong, try again."
+                        registrationError = null, // Don't show error for user lookup
+                        registeredUser = null
                     )
                 }
             }
@@ -143,11 +148,9 @@ class RegistrationViewModel(
     private fun fetchCities() {
         viewModelScope.launch {
             try {
-                _uiState.update { it.copy(isLoading = true, errorMsg = null) }
                 databaseRepo.getAllCities().onSuccess { cities ->
                     _uiState.update {
                         it.copy(
-                            isLoading = false,
                             cities = cities,
                             errorMsg = null
                         )
@@ -155,8 +158,7 @@ class RegistrationViewModel(
                 }.onFailure { error ->
                     _uiState.update {
                         it.copy(
-                            isLoading = false,
-                            errorMsg = error.message ?: "Something went wrong, try again."
+                            errorMsg = error.message ?: "Failed to load cities."
                         )
                     }
                 }
@@ -164,8 +166,7 @@ class RegistrationViewModel(
                 logger.e(e) { "Error fetching cities: ${e.message}" }
                 _uiState.update {
                     it.copy(
-                        isLoading = false,
-                        errorMsg = "Something went wrong, try again."
+                        errorMsg = "Failed to load cities."
                     )
                 }
             }
@@ -175,11 +176,9 @@ class RegistrationViewModel(
     private fun fetchStates() {
         viewModelScope.launch {
             try {
-                _uiState.update { it.copy(isLoading = true, errorMsg = null) }
                 databaseRepo.getAllStates().onSuccess { states ->
                     _uiState.update {
                         it.copy(
-                            isLoading = false,
                             states = states,
                             errorMsg = null
                         )
@@ -187,8 +186,7 @@ class RegistrationViewModel(
                 }.onFailure { error ->
                     _uiState.update {
                         it.copy(
-                            isLoading = false,
-                            errorMsg = error.message ?: "Something went wrong, try again."
+                            errorMsg = error.message ?: "Failed to load states."
                         )
                     }
                 }
@@ -196,8 +194,7 @@ class RegistrationViewModel(
                 logger.e(e) { "Error fetching states: ${e.message}" }
                 _uiState.update {
                     it.copy(
-                        isLoading = false,
-                        errorMsg = "Something went wrong, try again."
+                        errorMsg = "Failed to load states."
                     )
                 }
             }
@@ -213,13 +210,13 @@ class RegistrationViewModel(
                             state.copy(
                                 userInfo = userInfo,
                                 isLoading = false,
-                                errorMsg = null
+                                authErrorMsg = null
                             )
                         },
                         onFailure = { error ->
                             state.copy(
                                 isLoading = false,
-                                errorMsg = error.message
+                                authErrorMsg = error.message
                             )
                         }
                     )
@@ -228,7 +225,10 @@ class RegistrationViewModel(
             .catch { e ->
                 logger.e(e) { "Error fetching login status" }
                 _uiState.update {
-                    it.copy(isLoading = false, errorMsg = "Something went wrong, try again.")
+                    it.copy(
+                        isLoading = false,
+                        authErrorMsg = "Authentication error. Please login again."
+                    )
                 }
             }
             .launchIn(viewModelScope)
@@ -382,25 +382,7 @@ class RegistrationViewModel(
     private fun submitForm() {
         validateForm()
         if (_uiState.value.isFormValid) {
-            viewModelScope.launch {
-                _uiState.update { it.copy(isLoading = true) }
-                try {
-                    registerNewUser()
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMsg = null
-                        )
-                    }
-                } catch (e: Exception) {
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMsg = e.message ?: "Registration failed. Please try again."
-                        )
-                    }
-                }
-            }
+            registerNewUser()
         }
     }
 }

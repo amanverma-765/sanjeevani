@@ -58,9 +58,11 @@ fun RegistrationScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
     if (uiState.isLoading) LoadingDialog()
 
-    LaunchedEffect(uiState.errorMsg, uiState.authErrorMsg) {
+    // Handle error messages
+    LaunchedEffect(uiState.errorMsg, uiState.authErrorMsg, uiState.registrationError) {
         uiState.errorMsg?.let {
             context.toastShort(it)
             viewModel.onEvent(RegistrationUiEvent.ClearErrorMsg)
@@ -70,23 +72,21 @@ fun RegistrationScreen(
             viewModel.onEvent(RegistrationUiEvent.ClearErrorMsg)
             onUserNotAuthenticated()
         }
-    }
-
-    // Handle successful registration
-    LaunchedEffect(uiState.isFormValid) {
-        if (uiState.isFormValid && !uiState.isLoading && uiState.hasAttemptedSubmit) {
-            onRegCompleted()
+        uiState.registrationError?.let {
+            context.toastShort(it)
         }
     }
 
+    // Check for existing user when userInfo is available
     LaunchedEffect(uiState.userInfo) {
-        uiState.userInfo?.let {
-            viewModel.onEvent(RegistrationUiEvent.GetRegisteredUser(it.email))
+        uiState.userInfo?.let { userInfo ->
+            viewModel.onEvent(RegistrationUiEvent.GetRegisteredUser(userInfo.email))
         }
     }
 
-    LaunchedEffect(uiState.registeredUser) {
-        uiState.registeredUser?.let {
+    // Handle navigation after successful registration or existing user found
+    LaunchedEffect(uiState.isRegistrationComplete) {
+        if (uiState.isRegistrationComplete) {
             onRegCompleted()
         }
     }
