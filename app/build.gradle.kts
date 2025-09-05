@@ -111,6 +111,7 @@ dependencies {
     implementation(libs.androidx.compose.navigation)
     // Connectivity
     implementation(libs.connectivity.core)
+    implementation(libs.connectivity.android)
     implementation(libs.connectivity.compose.device)
     // Supabase dependencies
     implementation(platform(libs.supabase.bom))

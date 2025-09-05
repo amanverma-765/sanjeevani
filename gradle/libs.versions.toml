@@ -21,7 +21,7 @@ materialIconsExtended = "1.7.3"
 materialKolor = "3.0.1"
 composeIcons = "1.1.1"
 composeNavigation = "2.9.0-rc01"
-connectivity = "2.2.0"
+connectivity = "2.2.1"
 supabaseBom = "3.2.2"
 kermit = "2.0.8"
 
@@ -69,6 +69,7 @@ composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awes
 androidx-compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 connectivity-core = { module = "dev.jordond.connectivity:connectivity-core", version.ref = "connectivity" }
 connectivity-compose-device = { module = "dev.jordond.connectivity:connectivity-compose-device", version.ref = "connectivity" }
+connectivity-android = { module = "dev.jordond.connectivity:connectivity-android", version.ref = "connectivity" }
 supabase-bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "supabaseBom" }
 supabase-postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
 supabase-realtime-kt = { module = "io.github.jan-tennert.supabase:realtime-kt" }
