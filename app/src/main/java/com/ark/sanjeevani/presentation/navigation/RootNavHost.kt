@@ -51,7 +51,7 @@ fun RootNavHost(
             LoginScreen(
                 onLoginSuccessfully = {
                     navController.navigate(Destinations.Registration) {
-                        popUpTo(0) { inclusive = true } // clear everything
+                        popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
                 }
@@ -62,13 +62,13 @@ fun RootNavHost(
             RegistrationScreen(
                 onRegCompleted = {
                     navController.navigate(Destinations.Home) {
-                        popUpTo(0) { inclusive = true } // clear everything
+                        popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
                 },
                 onUserNotAuthenticated = {
                     navController.navigate(Destinations.Login) {
-                        popUpTo(0) { inclusive = true } // clear everything
+                        popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
                 }
@@ -80,7 +80,19 @@ fun RootNavHost(
                 onNotificationClicked = {
                     navController.navigate(Destinations.Notification)
                 },
-                onHospitalClicked = {}
+                onHospitalClicked = {},
+                onNavigateToRegistration = {
+                    navController.navigate(Destinations.Registration) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                onNavigateToLoginScreen = {
+                    navController.navigate(Destinations.Localization) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
 

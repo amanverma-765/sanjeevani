@@ -19,7 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import co.touchlab.kermit.Logger
 import com.ark.sanjeevani.domain.enums.HospitalType
+import com.ark.sanjeevani.presentation.features.auth.logic.reg.RegistrationUiEvent
 import com.ark.sanjeevani.presentation.features.home.components.BannerCarousel
 import com.ark.sanjeevani.presentation.features.home.components.HomeTopBar
 import com.ark.sanjeevani.presentation.features.home.components.HospitalSection
@@ -37,15 +40,32 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
     onNotificationClicked: () -> Unit,
+    onNavigateToRegistration: () -> Unit,
+    onNavigateToLoginScreen: () -> Unit,
     onHospitalClicked: (hospitalType: HospitalType) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
-    uiState.errorMsg?.let { errorMsg ->
-        LaunchedEffect(errorMsg) {
+    LaunchedEffect(uiState.errorMsg, uiState.authError) {
+        uiState.errorMsg?.let { errorMsg ->
             context.toastShort(errorMsg)
             viewModel.onEvent(HomeUiEvent.ClearErrorMsg)
+        }
+        uiState.authError?.let {
+            onNavigateToLoginScreen()
+        }
+    }
+
+    LaunchedEffect(uiState.userInfo) {
+        uiState.userInfo?.let {
+            viewModel.onEvent(HomeUiEvent.GetRegisteredUser(it.email))
+        }
+    }
+
+    LaunchedEffect(uiState.registeredUser, uiState.registrationError) {
+        if (uiState.registeredUser == null && uiState.registrationError != null) {
+            onNavigateToRegistration()
         }
     }
 

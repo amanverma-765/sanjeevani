@@ -78,7 +78,7 @@ class SupabaseDb(private val supabaseClient: SupabaseClient) {
                     }
                 }
                 .decodeList<RegisteredUserDto>()
-            if (user.isEmpty()) Result.success(null) else Result.success(user.first())
+            if (user.isEmpty()) Result.failure(RuntimeException("User is not registered")) else Result.success(user.first())
         } catch (e: Exception) {
             logger.e(e) { "Error while fetching registered user: ${e.message}" }
             Result.failure(RuntimeException("Something went wrong, try again"))
