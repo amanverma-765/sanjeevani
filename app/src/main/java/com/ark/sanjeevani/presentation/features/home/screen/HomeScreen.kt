@@ -10,12 +10,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -48,6 +50,7 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val networkState by networkVM.networkState.collectAsState()
+    val scrollBehavior = SearchBarDefaults.enterAlwaysSearchBarScrollBehavior()
 
     LaunchedEffect(uiState.errorMsg, uiState.authError) {
         uiState.errorMsg?.let { errorMsg ->
@@ -82,7 +85,8 @@ fun HomeScreen(
                 userProfileUrl = uiState.registeredUser?.avatar,
                 onNotificationClicked = onNotificationClicked,
                 isLoading = uiState.isUserLoading,
-                onProfileClicked = onProfileClicked
+                onProfileClicked = onProfileClicked,
+                scrollBehavior = scrollBehavior
             )
         }
     ) { innerPadding ->
@@ -90,7 +94,7 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             contentPadding = innerPadding.plus(PaddingValues(horizontal = 16.dp, vertical = 8.dp)),
-            modifier = modifier.fillMaxSize()
+            modifier = modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             if (uiState.bannerError == null) {
                 item {
