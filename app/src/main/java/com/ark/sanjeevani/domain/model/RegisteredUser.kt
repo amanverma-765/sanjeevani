@@ -16,4 +16,8 @@ data class RegisteredUser(
     val gender: Gender,
     val state: String,
     val city: String
-)
+) {
+    fun getFirstName(): String {
+        return name.split(" ").firstOrNull() ?: name
+    }
+}

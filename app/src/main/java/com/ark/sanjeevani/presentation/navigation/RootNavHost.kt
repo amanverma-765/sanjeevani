@@ -11,6 +11,7 @@ import com.ark.sanjeevani.presentation.features.home.screen.HomeScreen
 import com.ark.sanjeevani.presentation.features.notification.screen.NotificationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.LocalizationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.OnboardingScreen
+import com.ark.sanjeevani.presentation.features.profile.screen.ProfileScreen
 import com.ark.sanjeevani.utils.AnimatedNavHost
 import com.ark.sanjeevani.utils.safePopBackStack
 
@@ -92,14 +93,19 @@ fun RootNavHost(
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
+                },
+                onProfileClicked = {
+                    navController.navigate(Destinations.Profile)
                 }
             )
         }
 
         composable<Destinations.Notification> {
-            NotificationScreen(
-                onBackClicked = { navController.safePopBackStack() }
-            )
+            NotificationScreen()
+        }
+
+        composable<Destinations.Profile>{
+            ProfileScreen()
         }
     }
 }

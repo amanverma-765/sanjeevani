@@ -22,4 +22,7 @@ sealed interface Destinations {
 
     @Serializable
     data object Notification : Destinations
+
+    @Serializable
+    data object Profile : Destinations
 }

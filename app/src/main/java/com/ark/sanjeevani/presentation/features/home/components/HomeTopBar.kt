@@ -1,6 +1,7 @@
 package com.ark.sanjeevani.presentation.features.home.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,10 +19,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.ark.sanjeevani.utils.DefaultImageLoader
+import com.ark.sanjeevani.utils.DefaultImageLoader.imageLoader
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,8 +33,8 @@ import com.ark.sanjeevani.utils.DefaultImageLoader
 fun HomeTopBar(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
-    userName: String,
-    userProfileUrl: String,
+    userName: String?,
+    userProfileUrl: String?,
     onNotificationClicked: () -> Unit,
     onProfileClicked: () -> Unit
 ) {
@@ -39,7 +43,7 @@ fun HomeTopBar(
         title = {
             Column {
                 Text(
-                    text = "Hello, $userName 👋",
+                    text = "Hello, ${userName ?: "User"} 👋",
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
@@ -60,9 +64,13 @@ fun HomeTopBar(
                 if (isLoading) CircularProgressIndicator(Modifier.padding(4.dp))
                 else AsyncImage(
                     model = userProfileUrl,
-                    imageLoader = DefaultImageLoader.imageLoader,
-                    contentDescription = "Profile image",
-                    modifier = Modifier.size(48.dp)
+                    imageLoader = imageLoader,
+                    contentDescription = "Profile Image",
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = com.ark.sanjeevani.R.drawable.default_profile),
+                    error = painterResource(id = com.ark.sanjeevani.R.drawable.default_profile),
+                    fallback = painterResource(id = com.ark.sanjeevani.R.drawable.default_profile),
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         },
