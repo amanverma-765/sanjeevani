@@ -55,7 +55,7 @@ fun HomeScreen(
     LaunchedEffect(uiState.errorMsg, uiState.authError) {
         uiState.errorMsg?.let { errorMsg ->
             context.toastShort(errorMsg)
-            viewModel.onEvent(HomeUiEvent.ClearErrorMsg)
+            viewModel.onEvent(HomeUiEvent.ClearError)
         }
         uiState.authError?.let {
             if (networkState.isConnected) {

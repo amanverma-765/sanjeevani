@@ -3,7 +3,9 @@ package com.ark.sanjeevani.data.remote
 import co.touchlab.kermit.Logger
 import com.ark.sanjeevani.data.dto.BannerItemDto
 import com.ark.sanjeevani.data.dto.CityDto
+import com.ark.sanjeevani.data.dto.HospitalDto
 import com.ark.sanjeevani.data.dto.StatesDto
+import com.ark.sanjeevani.domain.enums.HospitalType
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Order
@@ -72,6 +74,34 @@ class SupabaseDb(private val supabaseClient: SupabaseClient) {
             }
         } catch (e: Exception) {
             logger.e(e) { "Error fetching banners: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
+        }
+    }
+
+    suspend fun getAllHospitals(
+        lat: String, // currently not used
+        lon: String, // currently not used
+        type: HospitalType
+    ): Result<List<HospitalDto>> {
+        return try {
+            val response = supabaseClient
+                .from("hospitals")
+                .select {
+                    filter {
+                        eq("type", type.name)
+                    }
+                }
+                .decodeList<HospitalDto>()
+
+            if (response.isEmpty()) {
+                logger.e { "No hospitals found" }
+                Result.failure(RuntimeException("No hospitals found"))
+            } else {
+                logger.i { "Hospitals fetched successfully: $response" }
+                Result.success(response)
+            }
+        } catch (e: Exception) {
+            logger.e(e) { "Error fetching hospitals: ${e.message}" }
             Result.failure(RuntimeException("Something went wrong, try again"))
         }
     }

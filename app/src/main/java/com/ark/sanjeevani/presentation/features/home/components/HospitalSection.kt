@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -20,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -40,7 +38,7 @@ fun HospitalSection(
         HospitalCard(
             icon = R.drawable.gov_hospital_icon,
             title = "Gov Hospitals",
-            onClick = { onClick(HospitalType.GOVERNMENT) },
+            onClick = { onClick(HospitalType.GOV) },
             modifier = Modifier.weight(1f)
         )
         HospitalCard(
@@ -60,7 +58,7 @@ private fun HospitalCard(
     onClick: () -> Unit
 ) {
     OutlinedCard(
-        onClick = {},
+        onClick = onClick,
         shape = RoundedCornerShape(20),
         modifier = modifier
             .fillMaxWidth()

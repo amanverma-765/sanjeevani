@@ -26,7 +26,7 @@ class HomeViewModel(
 
     fun onEvent(event: HomeUiEvent) {
         when (event) {
-            HomeUiEvent.ClearErrorMsg -> _uiState.update { it.copy(errorMsg = null) }
+            HomeUiEvent.ClearError -> _uiState.update { it.copy(errorMsg = null) }
             is HomeUiEvent.GetRegisteredUser -> getRegisteredUser(event.email)
         }
     }

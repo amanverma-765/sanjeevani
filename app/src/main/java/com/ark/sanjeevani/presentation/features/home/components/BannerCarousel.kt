@@ -120,7 +120,7 @@ fun BannerCarousel(
                     }
                 }
             }
-            PillIndicator(
+            CarouselIndicator(
                 currentPage = pagerState.currentPage,
                 totalDots = banners.size,
                 modifier = Modifier

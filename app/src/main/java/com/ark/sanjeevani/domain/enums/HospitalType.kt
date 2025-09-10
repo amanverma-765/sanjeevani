@@ -1,6 +1,6 @@
 package com.ark.sanjeevani.domain.enums
 
 enum class HospitalType {
-    GOVERNMENT,
+    GOV,
     PRIVATE
 }

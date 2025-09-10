@@ -5,9 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.ark.sanjeevani.presentation.features.auth.screen.LoginScreen
 import com.ark.sanjeevani.presentation.features.auth.screen.RegistrationScreen
 import com.ark.sanjeevani.presentation.features.home.screen.HomeScreen
+import com.ark.sanjeevani.presentation.features.hospital.screen.HospitalScreen
 import com.ark.sanjeevani.presentation.features.notification.screen.NotificationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.LocalizationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.OnboardingScreen
@@ -81,7 +83,9 @@ fun RootNavHost(
                 onNotificationClicked = {
                     navController.navigate(Destinations.Notification)
                 },
-                onHospitalClicked = {},
+                onHospitalClicked = { type ->
+                    navController.navigate(Destinations.Hospital(type))
+                },
                 onNavigateToRegistration = {
                     navController.navigate(Destinations.Registration) {
                         popUpTo(0) { inclusive = true }
@@ -96,6 +100,16 @@ fun RootNavHost(
                 },
                 onProfileClicked = {
                     navController.navigate(Destinations.Profile)
+                }
+            )
+        }
+
+        composable<Destinations.Hospital> { navBackStack ->
+            val hospital = navBackStack.toRoute<Destinations.Hospital>()
+            HospitalScreen(
+                type = hospital.type,
+                onBackClicked = {
+                    navController.safePopBackStack()
                 }
             )
         }

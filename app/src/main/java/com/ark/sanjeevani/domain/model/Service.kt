@@ -53,5 +53,19 @@ val mockServices = listOf(
         "Get List of blood banks nearby",
         R.drawable.blood_bank_icon,
         Color(0xFFFF5252) // Bright Red
+    ),
+    Service(
+        7,
+        "Blood Banks",
+        "Get List of blood banks nearby",
+        R.drawable.blood_bank_icon,
+        Color(0xFFFF5252) // Bright Red
+    ),
+    Service(
+        8,
+        "Blood Banks",
+        "Get List of blood banks nearby",
+        R.drawable.blood_bank_icon,
+        Color(0xFFFF5252) // Bright Red
     )
 )

@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PillIndicator(
+fun CarouselIndicator(
     currentPage: Int,
     totalDots: Int,
     modifier: Modifier = Modifier
