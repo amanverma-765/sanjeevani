@@ -55,7 +55,7 @@ fun HomeTopBar(
             title = {
                 Column {
                     Text(
-                        text = "Hello, ${userName ?: "User"} 👋",
+                        text = "Hello, ${userName ?: ""} 👋",
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
