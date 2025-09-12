@@ -10,5 +10,7 @@ data class Hospital(
     val lon : String,
     val type: HospitalType,
     val createdAt: String,
-    val img: String
+    val img: String,
+    val rating: Double,
+    val website: String?,
 )

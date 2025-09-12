@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.ark.sanjeevani.domain.model.Hospital
@@ -42,10 +43,11 @@ fun HospitalCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 12.dp)
+                    .padding(bottom = 8.dp)
             ) {
                 Text(
                     text = hospital.name,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
                     modifier = Modifier.weight(1f)
                 )

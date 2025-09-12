@@ -14,5 +14,7 @@ data class HospitalDto(
     val type: HospitalType,
     @SerialName("created_at")
     val createdAt: String,
-    val img: String
+    val img: String,
+    val rating: Double,
+    val website: String?,
 )

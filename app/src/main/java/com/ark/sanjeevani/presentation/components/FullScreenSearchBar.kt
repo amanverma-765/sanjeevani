@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FullScreenSearchBar(
     modifier: Modifier = Modifier,
+    label: String = "Search here...",
     scrollBehavior: SearchBarScrollBehavior
 ) {
 
@@ -41,7 +42,7 @@ fun FullScreenSearchBar(
                 searchBarState = state,
                 textFieldState = textFieldState,
                 onSearch = { scope.launch { state.animateToCollapsed() } },
-                placeholder = { Text("Search here...") },
+                placeholder = { Text(label) },
                 leadingIcon = {
                     if (state.currentValue == SearchBarValue.Expanded) {
                         IconButton(

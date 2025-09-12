@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import com.ark.sanjeevani.presentation.features.auth.screen.LoginScreen
 import com.ark.sanjeevani.presentation.features.auth.screen.RegistrationScreen
 import com.ark.sanjeevani.presentation.features.home.screen.HomeScreen
+import com.ark.sanjeevani.presentation.features.hospital.screen.HospitalDetailScreen
 import com.ark.sanjeevani.presentation.features.hospital.screen.HospitalScreen
 import com.ark.sanjeevani.presentation.features.notification.screen.NotificationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.LocalizationScreen
@@ -108,6 +109,19 @@ fun RootNavHost(
             val hospital = navBackStack.toRoute<Destinations.Hospital>()
             HospitalScreen(
                 type = hospital.type,
+                onHospitalClicked = {
+                    navController.navigate(Destinations.HospitalDetail(it))
+                },
+                onBackClicked = {
+                    navController.safePopBackStack()
+                }
+            )
+        }
+
+        composable<Destinations.HospitalDetail> { navBackStack ->
+            val hospitalDetail = navBackStack.toRoute<Destinations.HospitalDetail>()
+            HospitalDetailScreen(
+                hospitalId = hospitalDetail.id,
                 onBackClicked = {
                     navController.safePopBackStack()
                 }

@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger
 import com.ark.sanjeevani.data.dto.BannerItemDto
 import com.ark.sanjeevani.data.dto.CityDto
 import com.ark.sanjeevani.data.dto.HospitalDto
+import com.ark.sanjeevani.data.dto.HospitalRoomDto
 import com.ark.sanjeevani.data.dto.StatesDto
 import com.ark.sanjeevani.domain.enums.HospitalType
 import io.github.jan.supabase.SupabaseClient
@@ -93,15 +94,49 @@ class SupabaseDb(private val supabaseClient: SupabaseClient) {
                 }
                 .decodeList<HospitalDto>()
 
-            if (response.isEmpty()) {
-                logger.e { "No hospitals found" }
-                Result.failure(RuntimeException("No hospitals found"))
-            } else {
-                logger.i { "Hospitals fetched successfully: $response" }
-                Result.success(response)
-            }
+            logger.i { "Hospitals fetched successfully: $response" }
+            Result.success(response)
         } catch (e: Exception) {
             logger.e(e) { "Error fetching hospitals: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
+        }
+    }
+
+    suspend fun getHospitalById(hospitalId: String): Result<HospitalDto> {
+        return try {
+            val response = supabaseClient
+                .from("hospitals")
+                .select {
+                    filter {
+                        eq("id", hospitalId)
+                    }
+                }
+                .decodeList<HospitalDto>()
+
+            logger.i { "Hospital fetched successfully: ${response[0]}" }
+            Result.success(response[0])
+        } catch (e: Exception) {
+            logger.e(e) { "Error fetching hospital: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
+        }
+    }
+
+    suspend fun getHospitalRooms(hospitalId: String): Result<List<HospitalRoomDto>> {
+        return try {
+            val response = supabaseClient
+                .from("hospital_rooms")
+                .select {
+                    filter {
+                        eq("hospital_id", hospitalId)
+                    }
+                    order("room_number", Order.ASCENDING)
+                }
+                .decodeList<HospitalRoomDto>()
+
+            logger.i { "Hospital rooms fetched successfully: $response" }
+            Result.success(response)
+        } catch (e: Exception) {
+            logger.e(e) { "Error fetching hospital rooms: ${e.message}" }
             Result.failure(RuntimeException("Something went wrong, try again"))
         }
     }

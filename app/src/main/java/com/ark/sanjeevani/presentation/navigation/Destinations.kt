@@ -19,6 +19,9 @@ sealed interface Destinations {
     data class Hospital(val type: HospitalType) : Destinations
 
     @Serializable
+    data class HospitalDetail(val id: String) : Destinations
+
+    @Serializable
     data object Login : Destinations
 
     @Serializable

@@ -2,10 +2,12 @@ package com.ark.sanjeevani.data.repo
 
 import com.ark.sanjeevani.data.mapper.BannerItemMapper.toBannerItem
 import com.ark.sanjeevani.data.mapper.HospitalMapper.toHospital
+import com.ark.sanjeevani.data.mapper.HospitalMapper.toHospitalRoom
 import com.ark.sanjeevani.data.remote.SupabaseDb
 import com.ark.sanjeevani.domain.enums.HospitalType
 import com.ark.sanjeevani.domain.model.BannerItem
 import com.ark.sanjeevani.domain.model.Hospital
+import com.ark.sanjeevani.domain.model.HospitalRoom
 import com.ark.sanjeevani.domain.repository.DatabaseRepo
 
 class DbRepoImpl(private val supabaseDb: SupabaseDb) : DatabaseRepo {
@@ -31,5 +33,15 @@ class DbRepoImpl(private val supabaseDb: SupabaseDb) : DatabaseRepo {
         return supabaseDb.getAllHospitals(lat, lon, type).map { result ->
             result.map { it.toHospital() }
         }
+    }
+
+    override suspend fun getHospitalRooms(hospitalId: String): Result<List<HospitalRoom>> {
+        return supabaseDb.getHospitalRooms(hospitalId).map { result ->
+            result.map { it.toHospitalRoom() }
+        }
+    }
+
+    override suspend fun getHospitalById(hospitalId: String): Result<Hospital> {
+        return supabaseDb.getHospitalById(hospitalId).map { it.toHospital() }
     }
 }

@@ -20,6 +20,60 @@ class HospitalViewModel(private val databaseRepo: DatabaseRepo) : ViewModel() {
         when (event) {
             HospitalUiEvent.ClearError -> _uiState.update { it.copy(errorMsg = null) }
             is HospitalUiEvent.GetHospitals -> getHospitals(event.type)
+            is HospitalUiEvent.GetHospitalsRoms -> getHospitalRooms(event.id)
+            is HospitalUiEvent.GetHospitalById -> getHospitalById(event.id)
+        }
+    }
+
+    private fun getHospitalById(hospitalId: String) {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true) }
+                databaseRepo.getHospitalById(hospitalId).onSuccess { hospital ->
+                    _uiState.update { it.copy(hospital = hospital, isLoading = false) }
+                }.onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            errorMsg = error.message ?: "Failed to fetch hospital details.",
+                            isLoading = false
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                logger.e(e) { "Error fetching hospital details: ${e.message}" }
+                _uiState.update {
+                    it.copy(
+                        errorMsg = "Something went wrong while fetching hospital details.",
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getHospitalRooms(hospitalId: String) {
+        viewModelScope.launch {
+            try {
+                _uiState.update { it.copy(isLoading = true) }
+                databaseRepo.getHospitalRooms(hospitalId).onSuccess { rooms ->
+                    _uiState.update { it.copy(rooms = rooms, isLoading = false) }
+                }.onFailure { error ->
+                    _uiState.update {
+                        it.copy(
+                            errorMsg = error.message ?: "Failed to fetch hospital rooms.",
+                            isLoading = false
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                logger.e(e) { "Error fetching hospital rooms: ${e.message}" }
+                _uiState.update {
+                    it.copy(
+                        errorMsg = "Something went wrong while fetching hospital rooms.",
+                        isLoading = false
+                    )
+                }
+            }
         }
     }
 
@@ -32,7 +86,7 @@ class HospitalViewModel(private val databaseRepo: DatabaseRepo) : ViewModel() {
                     lon = "77.2090", // Example longitude
                     type = type
                 ).onSuccess { hospitals ->
-                    _uiState.update { it.copy(hospitals = hospitals, isLoading = false) }
+                    _uiState.update { it.copy(allHospitals = hospitals, isLoading = false) }
                 }.onFailure { error ->
                     _uiState.update {
                         it.copy(
