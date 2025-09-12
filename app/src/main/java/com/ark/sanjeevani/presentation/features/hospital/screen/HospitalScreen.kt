@@ -59,7 +59,7 @@ fun HospitalScreen(
                 )
             ) {
                 SecondaryTopBar(
-                    title = "Government Hospitals",
+                    title = type.text,
                     onBackClick = onBackClicked
                 )
                 if (uiState.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
@@ -68,9 +68,7 @@ fun HospitalScreen(
         }
     ) { innerPadding ->
         LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             modifier = modifier
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)

@@ -10,6 +10,7 @@ data class HospitalDto(
     val name : String,
     val lat : String,
     val lon : String,
+    val address: String,
     val type: HospitalType,
     @SerialName("created_at")
     val createdAt: String,

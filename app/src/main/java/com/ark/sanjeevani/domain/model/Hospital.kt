@@ -6,6 +6,7 @@ data class Hospital(
     val id : String,
     val name : String,
     val lat : String,
+    val address: String,
     val lon : String,
     val type: HospitalType,
     val createdAt: String,

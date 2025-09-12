@@ -12,7 +12,8 @@ object HospitalMapper {
             lon = this.lon,
             type = this.type,
             createdAt = this.createdAt,
-            img = this.img
+            img = this.img,
+            address = this.address
         )
     }
 }
