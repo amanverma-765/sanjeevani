@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 fun FullScreenSearchBar(
     modifier: Modifier = Modifier,
     label: String = "Search here...",
-    scrollBehavior: SearchBarScrollBehavior
+    scrollBehavior: SearchBarScrollBehavior? = null,
 ) {
 
     val state = rememberSearchBarState()

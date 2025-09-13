@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,7 +41,6 @@ import com.ark.sanjeevani.utils.DefaultImageLoader.imageLoader
 fun HomeTopBar(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
-    scrollBehavior: SearchBarScrollBehavior,
     userName: String?,
     userProfileUrl: String?,
     onNotificationClicked: () -> Unit,
@@ -102,6 +102,6 @@ fun HomeTopBar(
             }
         )
         // Searchbar here
-        FullScreenSearchBar(scrollBehavior = scrollBehavior)
+        FullScreenSearchBar()
     }
 }

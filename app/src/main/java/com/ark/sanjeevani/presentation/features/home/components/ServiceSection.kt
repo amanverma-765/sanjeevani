@@ -101,7 +101,7 @@ private fun ServiceCard(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(75.dp)
+                        .size(85.dp)
                         .background(
                             color = serviceItem.color.copy(alpha = 0.5f),
                             shape = RoundedCornerShape(20.dp)

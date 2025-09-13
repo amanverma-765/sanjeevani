@@ -82,8 +82,7 @@ fun HomeScreen(
                 userProfileUrl = uiState.registeredUser?.avatar,
                 onNotificationClicked = onNotificationClicked,
                 isLoading = uiState.isUserLoading,
-                onProfileClicked = onProfileClicked,
-                scrollBehavior = scrollBehavior
+                onProfileClicked = onProfileClicked
             )
         }
     ) { innerPadding ->
