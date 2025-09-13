@@ -3,7 +3,6 @@ package com.ark.sanjeevani.presentation.features.home.logic
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
-import com.ark.sanjeevani.domain.model.mockServices
 import com.ark.sanjeevani.domain.repository.AuthenticationRepo
 import com.ark.sanjeevani.domain.repository.DatabaseRepo
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,26 +33,6 @@ class HomeViewModel(
     init {
         listenAuthStatus()
         getBanners()
-        getAvailableServices()
-    }
-
-    private fun getAvailableServices() {
-        viewModelScope.launch {
-            try {
-                _uiState.update { it.copy(isServicesLoading = true) }
-                // Service retrieval logic here
-                val services = mockServices
-                _uiState.update { it.copy(services = services, isServicesLoading = false) }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                _uiState.update {
-                    it.copy(
-                        errorMsg = "Something went wrong while fetching services.",
-                        isServicesLoading = false
-                    )
-                }
-            }
-        }
     }
 
     private fun getBanners() {

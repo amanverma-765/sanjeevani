@@ -2,12 +2,8 @@ package com.ark.sanjeevani.presentation.features.home.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBarDefaults
@@ -29,6 +25,7 @@ import com.ark.sanjeevani.presentation.features.home.components.HospitalSection
 import com.ark.sanjeevani.presentation.features.home.components.ServiceSection
 import com.ark.sanjeevani.presentation.features.home.logic.HomeUiEvent
 import com.ark.sanjeevani.presentation.features.home.logic.HomeViewModel
+import com.ark.sanjeevani.presentation.features.home.logic.serviceItems
 import com.ark.sanjeevani.utils.NetworkViewModel
 import com.ark.sanjeevani.utils.plus
 import com.ark.sanjeevani.utils.toastShort
@@ -109,21 +106,9 @@ fun HomeScreen(
             item { HospitalSection(onClick = onHospitalClicked) }
             item {
                 ServiceSection(
-                    services = uiState.services,
-                    isLoading = uiState.isServicesLoading,
+                    serviceItems = serviceItems,
                     onClick = {},
                 )
-            }
-            // Not Decided what to show in this section
-            items(3) {
-                Card(
-                    shape = RoundedCornerShape(20),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(2f / 0.7f)
-                ) {
-
-                }
             }
         }
     }
