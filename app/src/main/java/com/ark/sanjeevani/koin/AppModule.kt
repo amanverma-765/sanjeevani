@@ -11,6 +11,7 @@ import com.ark.sanjeevani.presentation.features.auth.logic.reg.RegistrationViewM
 import com.ark.sanjeevani.presentation.features.home.logic.HomeViewModel
 import com.ark.sanjeevani.presentation.features.hospital.logic.HospitalViewModel
 import com.ark.sanjeevani.presentation.features.onBoarding.logic.LocalizationViewModel
+import com.ark.sanjeevani.presentation.features.tabs.logic.TabViewModel
 import com.ark.sanjeevani.utils.NetworkViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,4 +37,5 @@ val appModule = module {
     singleOf(::DbRepoImpl) { bind<DatabaseRepo>()}
     viewModelOf(::NetworkViewModel)
     viewModelOf(::HospitalViewModel)
+    viewModelOf(::TabViewModel)
 }

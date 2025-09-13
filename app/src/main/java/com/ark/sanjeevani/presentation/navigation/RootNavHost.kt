@@ -8,13 +8,14 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.ark.sanjeevani.presentation.features.auth.screen.LoginScreen
 import com.ark.sanjeevani.presentation.features.auth.screen.RegistrationScreen
-import com.ark.sanjeevani.presentation.features.home.screen.HomeScreen
 import com.ark.sanjeevani.presentation.features.hospital.screen.HospitalDetailScreen
 import com.ark.sanjeevani.presentation.features.hospital.screen.HospitalScreen
 import com.ark.sanjeevani.presentation.features.notification.screen.NotificationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.LocalizationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.OnboardingScreen
 import com.ark.sanjeevani.presentation.features.profile.screen.ProfileScreen
+import com.ark.sanjeevani.presentation.features.tabs.screen.TabContainer
+import com.ark.sanjeevani.presentation.features.tabs.logic.getTabDestination
 import com.ark.sanjeevani.utils.AnimatedNavHost
 import com.ark.sanjeevani.utils.safePopBackStack
 
@@ -22,7 +23,7 @@ import com.ark.sanjeevani.utils.safePopBackStack
 @Composable
 fun RootNavHost(
     modifier: Modifier = Modifier,
-    startDestination: Destinations
+    startDestination: RootDestinations
 ) {
     val navController = rememberNavController()
 
@@ -31,19 +32,26 @@ fun RootNavHost(
         startDestination = startDestination,
         modifier = modifier.fillMaxSize()
     ) {
+        composable<RootDestinations.Tab> { navBackStack ->
+            val tab = navBackStack.toRoute<RootDestinations.Tab>()
+            TabContainer(
+                navController = navController,
+                initialTab = getTabDestination(tab.initialTab)
+            )
+        }
 
-        composable<Destinations.Localization> {
+        composable<RootDestinations.Localization> {
             LocalizationScreen(
                 onLanguageSelected = {
-                    navController.navigate(Destinations.Onboarding)
+                    navController.navigate(RootDestinations.Onboarding)
                 }
             )
         }
 
-        composable<Destinations.Onboarding> {
+        composable<RootDestinations.Onboarding> {
             OnboardingScreen(
                 onFinishClick = {
-                    navController.navigate(Destinations.Login) {
+                    navController.navigate(RootDestinations.Login) {
                         popUpTo(0) { inclusive = true } // clear everything
                         launchSingleTop = true
                     }
@@ -51,10 +59,10 @@ fun RootNavHost(
             )
         }
 
-        composable<Destinations.Login> {
+        composable<RootDestinations.Login> {
             LoginScreen(
                 onLoginSuccessfully = {
-                    navController.navigate(Destinations.Home) {
+                    navController.navigate(RootDestinations.Tab) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
@@ -62,16 +70,16 @@ fun RootNavHost(
             )
         }
 
-        composable<Destinations.Registration> {
+        composable<RootDestinations.Registration> {
             RegistrationScreen(
                 onRegCompleted = {
-                    navController.navigate(Destinations.Home) {
+                    navController.navigate(RootDestinations.Tab) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
                 },
                 onUserNotAuthenticated = {
-                    navController.navigate(Destinations.Login) {
+                    navController.navigate(RootDestinations.Login) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
@@ -79,38 +87,12 @@ fun RootNavHost(
             )
         }
 
-        composable<Destinations.Home> {
-            HomeScreen(
-                onNotificationClicked = {
-                    navController.navigate(Destinations.Notification)
-                },
-                onHospitalClicked = { type ->
-                    navController.navigate(Destinations.Hospital(type))
-                },
-                onNavigateToRegistration = {
-                    navController.navigate(Destinations.Registration) {
-                        popUpTo(0) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                },
-                onNavigateToLoginScreen = {
-                    navController.navigate(Destinations.Localization) {
-                        popUpTo(0) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                },
-                onProfileClicked = {
-                    navController.navigate(Destinations.Profile)
-                }
-            )
-        }
-
-        composable<Destinations.Hospital> { navBackStack ->
-            val hospital = navBackStack.toRoute<Destinations.Hospital>()
+        composable<RootDestinations.Hospital> { navBackStack ->
+            val hospital = navBackStack.toRoute<RootDestinations.Hospital>()
             HospitalScreen(
                 type = hospital.type,
                 onHospitalClicked = {
-                    navController.navigate(Destinations.HospitalDetail(it))
+                    navController.navigate(RootDestinations.HospitalDetail(it))
                 },
                 onBackClicked = {
                     navController.safePopBackStack()
@@ -118,8 +100,8 @@ fun RootNavHost(
             )
         }
 
-        composable<Destinations.HospitalDetail> { navBackStack ->
-            val hospitalDetail = navBackStack.toRoute<Destinations.HospitalDetail>()
+        composable<RootDestinations.HospitalDetail> { navBackStack ->
+            val hospitalDetail = navBackStack.toRoute<RootDestinations.HospitalDetail>()
             HospitalDetailScreen(
                 hospitalId = hospitalDetail.id,
                 onBackClicked = {
@@ -128,11 +110,11 @@ fun RootNavHost(
             )
         }
 
-        composable<Destinations.Notification> {
+        composable<RootDestinations.Notification> {
             NotificationScreen()
         }
 
-        composable<Destinations.Profile>{
+        composable<RootDestinations.Profile>{
             ProfileScreen()
         }
     }
