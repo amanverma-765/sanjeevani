@@ -1,13 +1,16 @@
 package com.ark.sanjeevani.presentation.features.hospital.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBarDefaults
@@ -17,11 +20,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ark.sanjeevani.domain.enums.HospitalType
 import com.ark.sanjeevani.presentation.components.FullScreenSearchBar
-import com.ark.sanjeevani.presentation.components.LoadingDialog
 import com.ark.sanjeevani.presentation.components.SecondaryTopBar
 import com.ark.sanjeevani.presentation.features.hospital.components.HospitalCard
 import com.ark.sanjeevani.presentation.features.hospital.logic.HospitalUiEvent
@@ -31,7 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HospitalScreen(
+fun HospitalListScreen(
     modifier: Modifier = Modifier,
     viewModel: HospitalViewModel = koinViewModel(),
     type: HospitalType,
@@ -57,7 +61,9 @@ fun HospitalScreen(
                     title = type.text,
                     onBackClick = onBackClicked
                 )
-                if (uiState.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
+                Box(Modifier.height(4.dp)) {
+                    if (uiState.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
+                }
                 FullScreenSearchBar(
                     label = "Search ${type.text}",
                     scrollBehavior = scrollBehavior
@@ -76,12 +82,20 @@ fun HospitalScreen(
                 items = uiState.allHospitals,
                 key = { it.id }
             ) { hospital ->
-                HospitalCard(
-                    hospital = hospital,
-                    onClick = {
-                        onHospitalClicked(hospital.id)
-                    }
-                )
+                Column {
+                    HospitalCard(
+                        hospital = hospital,
+                        onClick = {
+                            onHospitalClicked(hospital.id)
+                        }
+                    )
+                    if (uiState.allHospitals.last() != hospital)
+                        HorizontalDivider(
+                            Modifier
+                                .padding(horizontal = 12.dp)
+                                .alpha(.5f)
+                        )
+                }
             }
         }
     }

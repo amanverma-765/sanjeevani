@@ -9,11 +9,13 @@ import androidx.navigation.toRoute
 import com.ark.sanjeevani.presentation.features.auth.screen.LoginScreen
 import com.ark.sanjeevani.presentation.features.auth.screen.RegistrationScreen
 import com.ark.sanjeevani.presentation.features.hospital.screen.HospitalDetailScreen
-import com.ark.sanjeevani.presentation.features.hospital.screen.HospitalScreen
+import com.ark.sanjeevani.presentation.features.hospital.screen.HospitalListScreen
 import com.ark.sanjeevani.presentation.features.notification.screen.NotificationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.LocalizationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.OnboardingScreen
 import com.ark.sanjeevani.presentation.features.profile.screen.ProfileScreen
+import com.ark.sanjeevani.presentation.features.tabs.logic.TabDestinations
+import com.ark.sanjeevani.presentation.features.tabs.logic.createTabDestination
 import com.ark.sanjeevani.presentation.features.tabs.screen.TabContainer
 import com.ark.sanjeevani.presentation.features.tabs.logic.getTabDestination
 import com.ark.sanjeevani.utils.AnimatedNavHost
@@ -62,7 +64,11 @@ fun RootNavHost(
         composable<RootDestinations.Login> {
             LoginScreen(
                 onLoginSuccessfully = {
-                    navController.navigate(RootDestinations.Tab) {
+                    navController.navigate(
+                        RootDestinations.Tab(
+                            createTabDestination(TabDestinations.Home)
+                        )
+                    ) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
@@ -89,7 +95,7 @@ fun RootNavHost(
 
         composable<RootDestinations.Hospital> { navBackStack ->
             val hospital = navBackStack.toRoute<RootDestinations.Hospital>()
-            HospitalScreen(
+            HospitalListScreen(
                 type = hospital.type,
                 onHospitalClicked = {
                     navController.navigate(RootDestinations.HospitalDetail(it))
@@ -114,7 +120,7 @@ fun RootNavHost(
             NotificationScreen()
         }
 
-        composable<RootDestinations.Profile>{
+        composable<RootDestinations.Profile> {
             ProfileScreen()
         }
     }

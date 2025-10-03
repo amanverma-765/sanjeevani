@@ -1,9 +1,11 @@
 package com.ark.sanjeevani.presentation.features.hospital.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ark.sanjeevani.presentation.components.FullScreenSearchBar
 import com.ark.sanjeevani.presentation.components.SecondaryTopBar
@@ -54,7 +57,9 @@ fun HospitalDetailScreen(
                     title = "Hospital Details",
                     onBackClick = onBackClicked
                 )
-                if (uiState.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
+                Box(Modifier.height(4.dp)) {
+                    if (uiState.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
+                }
                 FullScreenSearchBar(scrollBehavior = scrollBehavior)
             }
         }

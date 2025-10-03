@@ -261,7 +261,6 @@ fun RegistrationScreen(
                     viewModel.onEvent(RegistrationUiEvent.SubmitForm)
                 },
                 enabled = !uiState.isLoading,
-                shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp)
