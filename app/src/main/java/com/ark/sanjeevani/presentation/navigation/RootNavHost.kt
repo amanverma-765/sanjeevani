@@ -8,16 +8,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.ark.sanjeevani.presentation.features.auth.screen.LoginScreen
 import com.ark.sanjeevani.presentation.features.auth.screen.RegistrationScreen
+import com.ark.sanjeevani.presentation.features.individual.hospital.screen.HospitalDetailScreen
+import com.ark.sanjeevani.presentation.features.individual.hospital.screen.HospitalListScreen
+import com.ark.sanjeevani.presentation.features.individual.notification.screen.NotificationScreen
+import com.ark.sanjeevani.presentation.features.individual.profile.screen.ProfileScreen
+import com.ark.sanjeevani.presentation.features.individual.tab.logic.TabDestinations
+import com.ark.sanjeevani.presentation.features.individual.tab.logic.createTabDestination
+import com.ark.sanjeevani.presentation.features.individual.tab.logic.getTabDestination
+import com.ark.sanjeevani.presentation.features.individual.tab.screen.TabContainer
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.LocalizationScreen
 import com.ark.sanjeevani.presentation.features.onBoarding.screen.OnboardingScreen
-import com.ark.sanjeevani.presentation.features.user.hospital.screen.HospitalDetailScreen
-import com.ark.sanjeevani.presentation.features.user.hospital.screen.HospitalListScreen
-import com.ark.sanjeevani.presentation.features.user.notification.screen.NotificationScreen
-import com.ark.sanjeevani.presentation.features.user.profile.screen.ProfileScreen
-import com.ark.sanjeevani.presentation.features.user.tabs.logic.TabDestinations
-import com.ark.sanjeevani.presentation.features.user.tabs.logic.createTabDestination
-import com.ark.sanjeevani.presentation.features.user.tabs.logic.getTabDestination
-import com.ark.sanjeevani.presentation.features.user.tabs.screen.TabContainer
 import com.ark.sanjeevani.utils.AnimatedNavHost
 import com.ark.sanjeevani.utils.safePopBackStack
 

@@ -8,10 +8,10 @@ import com.ark.sanjeevani.domain.repository.AuthenticationRepo
 import com.ark.sanjeevani.domain.repository.DatabaseRepo
 import com.ark.sanjeevani.presentation.features.auth.logic.login.LoginViewModel
 import com.ark.sanjeevani.presentation.features.auth.logic.reg.RegistrationViewModel
+import com.ark.sanjeevani.presentation.features.individual.home.logic.HomeViewModel
+import com.ark.sanjeevani.presentation.features.individual.hospital.logic.HospitalViewModel
+import com.ark.sanjeevani.presentation.features.individual.tab.logic.TabViewModel
 import com.ark.sanjeevani.presentation.features.onBoarding.logic.LocalizationViewModel
-import com.ark.sanjeevani.presentation.features.user.home.logic.HomeViewModel
-import com.ark.sanjeevani.presentation.features.user.hospital.logic.HospitalViewModel
-import com.ark.sanjeevani.presentation.features.user.tabs.logic.TabViewModel
 import com.ark.sanjeevani.utils.NetworkViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -15,8 +15,8 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ark.sanjeevani.presentation.features.user.tabs.logic.TabDestinations
-import com.ark.sanjeevani.presentation.features.user.tabs.logic.createTabDestination
+import com.ark.sanjeevani.presentation.features.individual.tab.logic.TabDestinations
+import com.ark.sanjeevani.presentation.features.individual.tab.logic.createTabDestination
 import com.ark.sanjeevani.presentation.navigation.RootDestinations
 import com.ark.sanjeevani.presentation.navigation.RootNavHost
 import com.ark.sanjeevani.presentation.theme.SanjeevaniTheme
