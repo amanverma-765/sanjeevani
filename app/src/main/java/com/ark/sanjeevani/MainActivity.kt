@@ -9,16 +9,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ark.sanjeevani.utils.NetworkStatusDialog
+import com.ark.sanjeevani.presentation.features.user.tabs.logic.TabDestinations
+import com.ark.sanjeevani.presentation.features.user.tabs.logic.createTabDestination
 import com.ark.sanjeevani.presentation.navigation.RootDestinations
 import com.ark.sanjeevani.presentation.navigation.RootNavHost
-import com.ark.sanjeevani.presentation.features.tabs.logic.TabDestinations
-import com.ark.sanjeevani.presentation.features.tabs.logic.createTabDestination
 import com.ark.sanjeevani.presentation.theme.SanjeevaniTheme
+import com.ark.sanjeevani.utils.NetworkStatusDialog
 import com.ark.sanjeevani.utils.NetworkViewModel
 
 class MainActivity : ComponentActivity() {

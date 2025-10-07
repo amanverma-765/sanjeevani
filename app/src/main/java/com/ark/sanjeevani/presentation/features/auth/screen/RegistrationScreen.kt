@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -35,13 +34,13 @@ import androidx.compose.ui.unit.dp
 import com.ark.sanjeevani.R
 import com.ark.sanjeevani.domain.enums.LoginRole
 import com.ark.sanjeevani.presentation.components.LoadingDialog
-import com.ark.sanjeevani.presentation.features.auth.components.UserSelectionCard
 import com.ark.sanjeevani.presentation.features.auth.components.CityDropdownField
 import com.ark.sanjeevani.presentation.features.auth.components.DatePickerField
 import com.ark.sanjeevani.presentation.features.auth.components.GenderDropdownField
 import com.ark.sanjeevani.presentation.features.auth.components.ProfileImage
 import com.ark.sanjeevani.presentation.features.auth.components.RegistrationTextField
 import com.ark.sanjeevani.presentation.features.auth.components.StateDropdownField
+import com.ark.sanjeevani.presentation.features.auth.components.UserSelectionCard
 import com.ark.sanjeevani.presentation.features.auth.logic.reg.RegistrationUiEvent
 import com.ark.sanjeevani.presentation.features.auth.logic.reg.RegistrationViewModel
 import com.ark.sanjeevani.utils.toastShort

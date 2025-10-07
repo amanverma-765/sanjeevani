@@ -1,6 +1,5 @@
 package com.ark.sanjeevani.presentation.features.auth.components
 
-import android.R
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

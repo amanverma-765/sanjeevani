@@ -19,7 +19,7 @@ data class RegistrationUiState(
 
     // User data
     val registeredUser: RegisteredUser? = null,
-    val registrationError : String? = null,
+    val registrationError: String? = null,
     val isRegistrationComplete: Boolean = false,
 
     // Form fields

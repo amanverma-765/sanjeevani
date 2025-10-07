@@ -13,8 +13,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ark.sanjeevani.presentation.features.onBoarding.components.LanguageTopBar
 import com.ark.sanjeevani.presentation.features.onBoarding.components.LanguageCard
+import com.ark.sanjeevani.presentation.features.onBoarding.components.LanguageTopBar
 import com.ark.sanjeevani.presentation.features.onBoarding.logic.LocalizationUiEvent
 import com.ark.sanjeevani.presentation.features.onBoarding.logic.LocalizationViewModel
 import com.ark.sanjeevani.utils.plus

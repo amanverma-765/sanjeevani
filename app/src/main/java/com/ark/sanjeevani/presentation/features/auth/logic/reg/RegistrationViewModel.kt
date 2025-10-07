@@ -8,17 +8,13 @@ import com.ark.sanjeevani.domain.enums.LoginRole
 import com.ark.sanjeevani.domain.model.RegisteredUser
 import com.ark.sanjeevani.domain.repository.AuthenticationRepo
 import com.ark.sanjeevani.domain.repository.DatabaseRepo
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 

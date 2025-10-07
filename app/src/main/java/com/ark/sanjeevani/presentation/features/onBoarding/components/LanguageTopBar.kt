@@ -29,17 +29,17 @@ fun LanguageTopBar(
                 fontWeight = FontWeight.SemiBold
             )
         },
-       actions = {
-           FilledIconButton(
-               onClick = onNextClicked,
-               enabled = selected,
-               shape = RoundedCornerShape(40)
-           ) {
-               Icon(
-                   imageVector = Icons.Rounded.Check,
-                   contentDescription = null
-               )
-           }
-       }
+        actions = {
+            FilledIconButton(
+                onClick = onNextClicked,
+                enabled = selected,
+                shape = RoundedCornerShape(40)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Check,
+                    contentDescription = null
+                )
+            }
+        }
     )
 }
