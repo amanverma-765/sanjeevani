@@ -14,12 +14,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ark.sanjeevani.presentation.features.individual.history.screen.HistoryScreen
 import com.ark.sanjeevani.presentation.features.individual.home.components.HomeTopBar
+import com.ark.sanjeevani.presentation.features.individual.home.logic.ServiceType
 import com.ark.sanjeevani.presentation.features.individual.home.screen.HomeScreen
 import com.ark.sanjeevani.presentation.features.individual.tab.components.BottomNavBar
 import com.ark.sanjeevani.presentation.features.individual.tab.logic.TabDestinations
 import com.ark.sanjeevani.presentation.features.individual.tab.logic.TabUiEvent
 import com.ark.sanjeevani.presentation.features.individual.tab.logic.TabViewModel
-import com.ark.sanjeevani.presentation.navigation.RootDestinations
+import com.ark.sanjeevani.presentation.navigation.IndividualDestinations
 import com.ark.sanjeevani.utils.NetworkViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -38,7 +39,7 @@ fun TabContainer(
     LaunchedEffect(uiState.registrationError, uiState.authError) {
         uiState.authError?.let {
             if (networkState.isConnected) {
-                navController.navigate(RootDestinations.Localization) {
+                navController.navigate(IndividualDestinations.Localization) {
                     popUpTo(0) { inclusive = true }
                     launchSingleTop = true
                 }
@@ -55,7 +56,7 @@ fun TabContainer(
     LaunchedEffect(uiState.registeredUser, uiState.registrationError) {
         if (uiState.registeredUser == null && uiState.registrationError != null) {
             if (networkState.isConnected) {
-                navController.navigate(RootDestinations.Registration) {
+                navController.navigate(IndividualDestinations.Registration) {
                     popUpTo(0) { inclusive = true }
                     launchSingleTop = true
                 }
@@ -68,11 +69,11 @@ fun TabContainer(
             HomeTopBar(
                 userName = uiState.registeredUser?.getFirstName(),
                 userProfileUrl = uiState.registeredUser?.avatar,
-                onNotificationClicked = {
-                    navController.navigate(RootDestinations.Notification)
+                onNotificationClick = {
+                    navController.navigate(IndividualDestinations.Notification)
                 },
-                onProfileClicked = {
-                    navController.navigate(RootDestinations.Profile)
+                onProfileClick = {
+                    navController.navigate(IndividualDestinations.Profile)
                 },
                 isLoading = uiState.isUserLoading
             )
@@ -95,8 +96,18 @@ fun TabContainer(
             when (uiState.selectedDestination) {
                 TabDestinations.Home -> {
                     HomeScreen(
-                        onHospitalClicked = { type ->
-                            navController.navigate(RootDestinations.Hospital(type))
+                        onHospitalClick = { type ->
+                            navController.navigate(IndividualDestinations.HospitalList(type))
+                        },
+                        onServiceClick = {
+                            when (it) {
+                                ServiceType.DOCTOR -> navController.navigate(IndividualDestinations.DoctorList)
+                                ServiceType.PHYSIOTHERAPIST -> {}
+                                ServiceType.DIETITIAN -> {}
+                                ServiceType.MEDICAL_STORE -> {}
+                                ServiceType.LABS -> {}
+                                ServiceType.BLOOD_BANKS -> {}
+                            }
                         }
                     )
                 }

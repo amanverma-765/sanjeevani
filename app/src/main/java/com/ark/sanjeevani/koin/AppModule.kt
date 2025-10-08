@@ -8,6 +8,7 @@ import com.ark.sanjeevani.domain.repository.AuthenticationRepo
 import com.ark.sanjeevani.domain.repository.DatabaseRepo
 import com.ark.sanjeevani.presentation.features.auth.logic.login.LoginViewModel
 import com.ark.sanjeevani.presentation.features.auth.logic.reg.RegistrationViewModel
+import com.ark.sanjeevani.presentation.features.individual.doctor.logic.DoctorViewModel
 import com.ark.sanjeevani.presentation.features.individual.home.logic.HomeViewModel
 import com.ark.sanjeevani.presentation.features.individual.hospital.logic.HospitalViewModel
 import com.ark.sanjeevani.presentation.features.individual.tab.logic.TabViewModel
@@ -38,4 +39,5 @@ val appModule = module {
     viewModelOf(::NetworkViewModel)
     viewModelOf(::HospitalViewModel)
     viewModelOf(::TabViewModel)
+    viewModelOf(::DoctorViewModel)
 }

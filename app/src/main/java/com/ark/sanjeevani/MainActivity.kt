@@ -17,7 +17,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ark.sanjeevani.presentation.features.individual.tab.logic.TabDestinations
 import com.ark.sanjeevani.presentation.features.individual.tab.logic.createTabDestination
-import com.ark.sanjeevani.presentation.navigation.RootDestinations
+import com.ark.sanjeevani.presentation.navigation.IndividualDestinations
 import com.ark.sanjeevani.presentation.navigation.RootNavHost
 import com.ark.sanjeevani.presentation.theme.SanjeevaniTheme
 import com.ark.sanjeevani.utils.NetworkStatusDialog
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     Box {
                         key(networkState.reconnectionCount) {
                             RootNavHost(
-                                startDestination = RootDestinations.Tab(
+                                startDestination = IndividualDestinations.Tab(
                                     createTabDestination(TabDestinations.Home)
                                 )
                             )

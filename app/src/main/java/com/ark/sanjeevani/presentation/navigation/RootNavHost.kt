@@ -8,6 +8,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.ark.sanjeevani.presentation.features.auth.screen.LoginScreen
 import com.ark.sanjeevani.presentation.features.auth.screen.RegistrationScreen
+import com.ark.sanjeevani.presentation.features.individual.doctor.screen.DoctorDetailScreen
+import com.ark.sanjeevani.presentation.features.individual.doctor.screen.DoctorListScreen
 import com.ark.sanjeevani.presentation.features.individual.hospital.screen.HospitalDetailScreen
 import com.ark.sanjeevani.presentation.features.individual.hospital.screen.HospitalListScreen
 import com.ark.sanjeevani.presentation.features.individual.notification.screen.NotificationScreen
@@ -25,7 +27,7 @@ import com.ark.sanjeevani.utils.safePopBackStack
 @Composable
 fun RootNavHost(
     modifier: Modifier = Modifier,
-    startDestination: RootDestinations
+    startDestination: IndividualDestinations
 ) {
     val navController = rememberNavController()
 
@@ -34,26 +36,26 @@ fun RootNavHost(
         startDestination = startDestination,
         modifier = modifier.fillMaxSize()
     ) {
-        composable<RootDestinations.Tab> { navBackStack ->
-            val tab = navBackStack.toRoute<RootDestinations.Tab>()
+        composable<IndividualDestinations.Tab> { navBackStack ->
+            val tab = navBackStack.toRoute<IndividualDestinations.Tab>()
             TabContainer(
                 navController = navController,
                 initialTab = getTabDestination(tab.initialTab)
             )
         }
 
-        composable<RootDestinations.Localization> {
+        composable<IndividualDestinations.Localization> {
             LocalizationScreen(
                 onLanguageSelected = {
-                    navController.navigate(RootDestinations.Onboarding)
+                    navController.navigate(IndividualDestinations.Onboarding)
                 }
             )
         }
 
-        composable<RootDestinations.Onboarding> {
+        composable<IndividualDestinations.Onboarding> {
             OnboardingScreen(
                 onFinishClick = {
-                    navController.navigate(RootDestinations.Login) {
+                    navController.navigate(IndividualDestinations.Login) {
                         popUpTo(0) { inclusive = true } // clear everything
                         launchSingleTop = true
                     }
@@ -61,11 +63,11 @@ fun RootNavHost(
             )
         }
 
-        composable<RootDestinations.Login> {
+        composable<IndividualDestinations.Login> {
             LoginScreen(
                 onLoginSuccessfully = {
                     navController.navigate(
-                        RootDestinations.Tab(
+                        IndividualDestinations.Tab(
                             createTabDestination(TabDestinations.Home)
                         )
                     ) {
@@ -76,16 +78,16 @@ fun RootNavHost(
             )
         }
 
-        composable<RootDestinations.Registration> {
+        composable<IndividualDestinations.Registration> {
             RegistrationScreen(
                 onRegCompleted = {
-                    navController.navigate(RootDestinations.Tab) {
+                    navController.navigate(IndividualDestinations.Tab) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
                 },
                 onUserNotAuthenticated = {
-                    navController.navigate(RootDestinations.Login) {
+                    navController.navigate(IndividualDestinations.Login) {
                         popUpTo(0) { inclusive = true }
                         launchSingleTop = true
                     }
@@ -93,12 +95,12 @@ fun RootNavHost(
             )
         }
 
-        composable<RootDestinations.Hospital> { navBackStack ->
-            val hospital = navBackStack.toRoute<RootDestinations.Hospital>()
+        composable<IndividualDestinations.HospitalList> { navBackStack ->
+            val hospitalList = navBackStack.toRoute<IndividualDestinations.HospitalList>()
             HospitalListScreen(
-                type = hospital.type,
+                type = hospitalList.type,
                 onHospitalClicked = {
-                    navController.navigate(RootDestinations.HospitalDetail(it))
+                    navController.navigate(IndividualDestinations.HospitalDetail(it))
                 },
                 onBackClicked = {
                     navController.safePopBackStack()
@@ -106,8 +108,8 @@ fun RootNavHost(
             )
         }
 
-        composable<RootDestinations.HospitalDetail> { navBackStack ->
-            val hospitalDetail = navBackStack.toRoute<RootDestinations.HospitalDetail>()
+        composable<IndividualDestinations.HospitalDetail> { navBackStack ->
+            val hospitalDetail = navBackStack.toRoute<IndividualDestinations.HospitalDetail>()
             HospitalDetailScreen(
                 hospitalId = hospitalDetail.id,
                 onBackClicked = {
@@ -116,12 +118,32 @@ fun RootNavHost(
             )
         }
 
-        composable<RootDestinations.Notification> {
+        composable<IndividualDestinations.Notification> {
             NotificationScreen()
         }
 
-        composable<RootDestinations.Profile> {
+        composable<IndividualDestinations.Profile> {
             ProfileScreen()
+        }
+
+        composable<IndividualDestinations.DoctorList> {
+            DoctorListScreen(
+                onDoctorClicked = {
+                    navController.navigate(IndividualDestinations.DoctorDetail)
+                },
+                onBackClicked = {
+                    navController.safePopBackStack()
+                }
+            )
+        }
+
+        composable<IndividualDestinations.DoctorDetail> {
+            DoctorDetailScreen(
+                doctorId = "",
+                onBackClicked = {
+                    navController.safePopBackStack()
+                }
+            )
         }
     }
 }

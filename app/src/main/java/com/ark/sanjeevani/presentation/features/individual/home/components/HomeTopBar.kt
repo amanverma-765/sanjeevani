@@ -36,8 +36,8 @@ fun HomeTopBar(
     isLoading: Boolean,
     userName: String?,
     userProfileUrl: String?,
-    onNotificationClicked: () -> Unit,
-    onProfileClicked: () -> Unit
+    onNotificationClick: () -> Unit,
+    onProfileClick: () -> Unit
 ) {
     Column(
         modifier = modifier.background(
@@ -60,7 +60,7 @@ fun HomeTopBar(
             },
             navigationIcon = {
                 IconButton(
-                    onClick = onProfileClicked,
+                    onClick = onProfileClick,
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)
                     ),
@@ -81,7 +81,7 @@ fun HomeTopBar(
             },
             actions = {
                 FilledIconButton(
-                    onClick = onNotificationClicked,
+                    onClick = onNotificationClick,
                     shape = RoundedCornerShape(40),
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(12.dp)

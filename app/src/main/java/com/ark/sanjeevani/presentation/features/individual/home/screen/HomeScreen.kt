@@ -19,6 +19,7 @@ import com.ark.sanjeevani.presentation.features.individual.home.components.Hospi
 import com.ark.sanjeevani.presentation.features.individual.home.components.ServiceSection
 import com.ark.sanjeevani.presentation.features.individual.home.logic.HomeUiEvent
 import com.ark.sanjeevani.presentation.features.individual.home.logic.HomeViewModel
+import com.ark.sanjeevani.presentation.features.individual.home.logic.ServiceType
 import com.ark.sanjeevani.presentation.features.individual.home.logic.serviceItems
 import com.ark.sanjeevani.utils.toastShort
 import org.koin.androidx.compose.koinViewModel
@@ -29,7 +30,8 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
-    onHospitalClicked: (hospitalType: HospitalType) -> Unit
+    onHospitalClick: (hospitalType: HospitalType) -> Unit,
+    onServiceClick: (type: ServiceType) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -57,11 +59,13 @@ fun HomeScreen(
             }
         }
 
-        item { HospitalSection(onClick = onHospitalClicked) }
+        item { HospitalSection(onClick = onHospitalClick) }
         item {
             ServiceSection(
                 serviceItems = serviceItems,
-                onClick = {},
+                onClick = {
+                    onServiceClick(it)
+                }
             )
         }
     }

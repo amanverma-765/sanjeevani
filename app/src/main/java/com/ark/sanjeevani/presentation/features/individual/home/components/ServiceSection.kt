@@ -29,13 +29,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ark.sanjeevani.presentation.features.individual.home.logic.ServiceItem
+import com.ark.sanjeevani.presentation.features.individual.home.logic.ServiceType
 
 
 @Composable
 fun ServiceSection(
     modifier: Modifier = Modifier,
     serviceItems: List<ServiceItem>,
-    onClick: (serviceId: Int) -> Unit
+    onClick: (serviceType: ServiceType) -> Unit
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -50,7 +51,7 @@ fun ServiceSection(
                 rowServices.forEach { service ->
                     ServiceCard(
                         serviceItem = service,
-                        onCLick = { onClick(service.id) },
+                        onCLick = { onClick(service.type) },
                         modifier = Modifier.weight(1f)
                     )
                 }
