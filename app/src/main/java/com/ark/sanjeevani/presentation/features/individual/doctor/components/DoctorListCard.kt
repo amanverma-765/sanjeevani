@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
@@ -25,14 +25,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.ark.sanjeevani.domain.model.Hospital
+import com.ark.sanjeevani.domain.model.Doctor
 import com.ark.sanjeevani.utils.DefaultImageLoader.imageLoader
 
 
 @Composable
 fun DoctorListCard(
     modifier: Modifier = Modifier,
-    hospital: Hospital,
+    doctor: Doctor,
+    specialization: String,
     onClick: () -> Unit
 ) {
     ListItem(
@@ -46,13 +47,14 @@ fun DoctorListCard(
                     .padding(bottom = 8.dp)
             ) {
                 Text(
-                    text = hospital.name,
+                    text = doctor.name,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 2,
                     modifier = Modifier.weight(1f)
                 )
                 Text(
-                    text = "4km",
+                    text = if (doctor.experienceYears / 2 >= 1) "${doctor.experienceYears} Yrs"
+                    else "${doctor.experienceMonths} Months",
                     maxLines = 1,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier
@@ -66,7 +68,7 @@ fun DoctorListCard(
         },
         leadingContent = {
             AsyncImage(
-                model = hospital.img,
+                model = doctor.avatar,
                 imageLoader = imageLoader,
                 contentDescription = "Profile Image",
                 contentScale = ContentScale.Crop,
@@ -82,15 +84,15 @@ fun DoctorListCard(
         supportingContent = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Icon(
-                    imageVector = Icons.Default.LocationOn,
-                    contentDescription = "Location Icon",
+                    imageVector = Icons.Default.Bolt,
+                    contentDescription = null,
                     modifier = Modifier.size(16.dp)
                 )
-                Text(text = hospital.address, maxLines = 1)
+                Text(text = specialization, maxLines = 1)
             }
         }
     )

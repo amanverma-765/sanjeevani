@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.ark.sanjeevani.presentation.features.auth.screen.LoginScreen
 import com.ark.sanjeevani.presentation.features.auth.screen.RegistrationScreen
+import com.ark.sanjeevani.presentation.features.individual.doctor.screen.DoctorCategoryScreen
 import com.ark.sanjeevani.presentation.features.individual.doctor.screen.DoctorDetailScreen
 import com.ark.sanjeevani.presentation.features.individual.doctor.screen.DoctorListScreen
 import com.ark.sanjeevani.presentation.features.individual.hospital.screen.HospitalDetailScreen
@@ -126,10 +127,24 @@ fun RootNavHost(
             ProfileScreen()
         }
 
-        composable<IndividualDestinations.DoctorList> {
+        composable<IndividualDestinations.DoctorCategory> {
+            DoctorCategoryScreen(
+                onCategoryClick = { id, cat ->
+                    navController.navigate(IndividualDestinations.DoctorList(id, cat))
+                },
+                onBackClick = {
+                    navController.safePopBackStack()
+                }
+            )
+        }
+
+        composable<IndividualDestinations.DoctorList> { backStack ->
+            val doctorList = backStack.toRoute<IndividualDestinations.DoctorList>()
             DoctorListScreen(
+                categoryId = doctorList.id,
+                categoryName = doctorList.cat,
                 onDoctorClicked = {
-                    navController.navigate(IndividualDestinations.DoctorDetail)
+//                    navController.navigate(IndividualDestinations.DoctorDetail)
                 },
                 onBackClicked = {
                     navController.safePopBackStack()

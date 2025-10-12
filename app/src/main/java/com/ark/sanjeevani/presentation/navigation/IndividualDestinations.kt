@@ -34,7 +34,10 @@ sealed interface IndividualDestinations {
     data object Profile : IndividualDestinations
 
     @Serializable
-    data object DoctorList : IndividualDestinations
+    data class DoctorList(val id: String, val cat: String) : IndividualDestinations
+
+    @Serializable
+    data object DoctorCategory : IndividualDestinations
 
     @Serializable
     data object DoctorDetail : IndividualDestinations

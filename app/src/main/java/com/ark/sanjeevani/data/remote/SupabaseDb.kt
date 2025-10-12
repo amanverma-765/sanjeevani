@@ -3,6 +3,9 @@ package com.ark.sanjeevani.data.remote
 import co.touchlab.kermit.Logger
 import com.ark.sanjeevani.data.dto.BannerItemDto
 import com.ark.sanjeevani.data.dto.CityDto
+import com.ark.sanjeevani.data.dto.DoctorCategoryDto
+import com.ark.sanjeevani.data.dto.DoctorDto
+import com.ark.sanjeevani.data.dto.DoctorSpecializationDto
 import com.ark.sanjeevani.data.dto.HospitalDto
 import com.ark.sanjeevani.data.dto.HospitalRoomDto
 import com.ark.sanjeevani.data.dto.StatesDto
@@ -140,4 +143,58 @@ class SupabaseDb(private val supabaseClient: SupabaseClient) {
             Result.failure(RuntimeException("Something went wrong, try again"))
         }
     }
+
+    suspend fun getDoctorCategories(): Result<List<DoctorCategoryDto>> {
+        return try {
+            val response = supabaseClient
+                .from("specializations")
+                .select()
+                .decodeList<DoctorCategoryDto>()
+
+            logger.i { "Hospital categories fetched successfully: $response" }
+            Result.success(response)
+        } catch (e: Exception) {
+            logger.e(e) { "Error fetching hospital categories: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
+        }
+    }
+
+    suspend fun getDoctorsByCategory(id: String): Result<List<DoctorDto>> {
+        return try {
+            // Fetch all doctor IDs with the given specialization
+            val doctorIdList = supabaseClient
+                .from("doctor_specializations")
+                .select() {
+                    filter {
+                        eq("specialization_id", id)
+                    }
+                }
+                .decodeList<DoctorSpecializationDto>()
+
+            // Extract just the doctor IDs
+            val doctorIds = doctorIdList.map { it.doctorId }
+
+            if (doctorIds.isEmpty()) {
+                logger.i { "No doctors found for specialization: $id" }
+                return Result.success(emptyList())
+            }
+
+            // Fetch doctors matching those IDs using 'in' filter
+            val allDoctors = supabaseClient
+                .from("doctors")
+                .select() {
+                    filter {
+                        isIn("id", doctorIds)
+                    }
+                }
+                .decodeList<DoctorDto>()
+
+            logger.i { "Doctors fetched successfully for category: $id" }
+            Result.success(allDoctors)
+        } catch (e: Exception) {
+            logger.e(e) { "Error fetching doctors by category: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
+        }
+    }
+
 }

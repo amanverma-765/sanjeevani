@@ -73,7 +73,7 @@ fun TabContainer(
                     navController.navigate(IndividualDestinations.Notification)
                 },
                 onProfileClick = {
-                    navController.navigate(IndividualDestinations.Profile)
+//                    navController.navigate(IndividualDestinations.Profile)
                 },
                 isLoading = uiState.isUserLoading
             )
@@ -101,7 +101,7 @@ fun TabContainer(
                         },
                         onServiceClick = {
                             when (it) {
-                                ServiceType.DOCTOR -> navController.navigate(IndividualDestinations.DoctorList)
+                                ServiceType.DOCTOR -> navController.navigate(IndividualDestinations.DoctorCategory)
                                 ServiceType.PHYSIOTHERAPIST -> {}
                                 ServiceType.DIETITIAN -> {}
                                 ServiceType.MEDICAL_STORE -> {}
