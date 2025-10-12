@@ -1,4 +1,4 @@
-package com.ark.sanjeevani.presentation.features.individual.doctor.components
+package com.ark.sanjeevani.presentation.features.individual.service.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

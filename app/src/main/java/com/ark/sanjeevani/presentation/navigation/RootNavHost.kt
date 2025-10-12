@@ -8,13 +8,15 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.ark.sanjeevani.presentation.features.auth.screen.LoginScreen
 import com.ark.sanjeevani.presentation.features.auth.screen.RegistrationScreen
-import com.ark.sanjeevani.presentation.features.individual.doctor.screen.DoctorCategoryScreen
-import com.ark.sanjeevani.presentation.features.individual.doctor.screen.DoctorDetailScreen
-import com.ark.sanjeevani.presentation.features.individual.doctor.screen.DoctorListScreen
 import com.ark.sanjeevani.presentation.features.individual.hospital.screen.HospitalDetailScreen
 import com.ark.sanjeevani.presentation.features.individual.hospital.screen.HospitalListScreen
 import com.ark.sanjeevani.presentation.features.individual.notification.screen.NotificationScreen
 import com.ark.sanjeevani.presentation.features.individual.profile.screen.ProfileScreen
+import com.ark.sanjeevani.presentation.features.individual.service.screen.DietitianScreen
+import com.ark.sanjeevani.presentation.features.individual.service.screen.DoctorCategoryScreen
+import com.ark.sanjeevani.presentation.features.individual.service.screen.DoctorDetailScreen
+import com.ark.sanjeevani.presentation.features.individual.service.screen.DoctorListScreen
+import com.ark.sanjeevani.presentation.features.individual.service.screen.PhysiotherapistScreen
 import com.ark.sanjeevani.presentation.features.individual.tab.logic.TabDestinations
 import com.ark.sanjeevani.presentation.features.individual.tab.logic.createTabDestination
 import com.ark.sanjeevani.presentation.features.individual.tab.logic.getTabDestination
@@ -155,6 +157,28 @@ fun RootNavHost(
         composable<IndividualDestinations.DoctorDetail> {
             DoctorDetailScreen(
                 doctorId = "",
+                onBackClicked = {
+                    navController.safePopBackStack()
+                }
+            )
+        }
+
+        composable<IndividualDestinations.Physiotherapist> {
+            PhysiotherapistScreen(
+                onPhysiotherapistClick = {
+                    /* navController.navigate(IndividualDestinations.PhysiotherapistDetail) */
+                },
+                onBackClicked = {
+                    navController.safePopBackStack()
+                }
+            )
+        }
+
+        composable<IndividualDestinations.Dietitian> {
+            DietitianScreen(
+                onDietitianClick = {
+                    /* navController.navigate(IndividualDestinations.DietitianDetail) */
+                },
                 onBackClicked = {
                     navController.safePopBackStack()
                 }

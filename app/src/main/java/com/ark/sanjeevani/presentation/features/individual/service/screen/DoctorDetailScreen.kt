@@ -1,4 +1,4 @@
-package com.ark.sanjeevani.presentation.features.individual.doctor.screen
+package com.ark.sanjeevani.presentation.features.individual.service.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,20 +22,19 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ark.sanjeevani.presentation.components.FullScreenSearchBar
 import com.ark.sanjeevani.presentation.components.SecondaryTopBar
-import com.ark.sanjeevani.presentation.features.individual.doctor.logic.DoctorViewModel
+import com.ark.sanjeevani.presentation.features.individual.service.logic.ServiceViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DoctorDetailScreen(
     modifier: Modifier = Modifier,
-    viewModel: DoctorViewModel = koinViewModel(),
+    viewModel: ServiceViewModel = koinViewModel(),
     doctorId: String,
     onBackClicked: () -> Unit
 ) {
     val scrollBehavior = SearchBarDefaults.enterAlwaysSearchBarScrollBehavior()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
 
     Scaffold(
         topBar = {

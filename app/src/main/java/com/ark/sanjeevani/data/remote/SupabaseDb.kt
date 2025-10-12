@@ -3,11 +3,13 @@ package com.ark.sanjeevani.data.remote
 import co.touchlab.kermit.Logger
 import com.ark.sanjeevani.data.dto.BannerItemDto
 import com.ark.sanjeevani.data.dto.CityDto
+import com.ark.sanjeevani.data.dto.DietitianDto
 import com.ark.sanjeevani.data.dto.DoctorCategoryDto
 import com.ark.sanjeevani.data.dto.DoctorDto
 import com.ark.sanjeevani.data.dto.DoctorSpecializationDto
 import com.ark.sanjeevani.data.dto.HospitalDto
 import com.ark.sanjeevani.data.dto.HospitalRoomDto
+import com.ark.sanjeevani.data.dto.PhysioTherapistDto
 import com.ark.sanjeevani.data.dto.StatesDto
 import com.ark.sanjeevani.domain.enums.HospitalType
 import io.github.jan.supabase.SupabaseClient
@@ -151,10 +153,10 @@ class SupabaseDb(private val supabaseClient: SupabaseClient) {
                 .select()
                 .decodeList<DoctorCategoryDto>()
 
-            logger.i { "Hospital categories fetched successfully: $response" }
+            logger.i { "Doctor categories fetched successfully: $response" }
             Result.success(response)
         } catch (e: Exception) {
-            logger.e(e) { "Error fetching hospital categories: ${e.message}" }
+            logger.e(e) { "Error fetching Doctor categories: ${e.message}" }
             Result.failure(RuntimeException("Something went wrong, try again"))
         }
     }
@@ -193,6 +195,36 @@ class SupabaseDb(private val supabaseClient: SupabaseClient) {
             Result.success(allDoctors)
         } catch (e: Exception) {
             logger.e(e) { "Error fetching doctors by category: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
+        }
+    }
+
+    suspend fun getPhysiotherapist(): Result<List<PhysioTherapistDto>> {
+        return try {
+            val response = supabaseClient
+                .from("physiotherapist")
+                .select()
+                .decodeList<PhysioTherapistDto>()
+
+            logger.i { "Physiotherapists fetched successfully: $response" }
+            Result.success(response)
+        } catch (e: Exception) {
+            logger.e(e) { "Error fetching physiotherapists: ${e.message}" }
+            Result.failure(RuntimeException("Something went wrong, try again"))
+        }
+    }
+
+    suspend fun getDietitian(): Result<List<DietitianDto>> {
+        return try {
+            val response = supabaseClient
+                .from("dietitian")
+                .select()
+                .decodeList<DietitianDto>()
+
+            logger.i { "Dietitians fetched successfully: $response" }
+            Result.success(response)
+        } catch (e: Exception) {
+            logger.e(e) { "Error fetching Dietitians: ${e.message}" }
             Result.failure(RuntimeException("Something went wrong, try again"))
         }
     }

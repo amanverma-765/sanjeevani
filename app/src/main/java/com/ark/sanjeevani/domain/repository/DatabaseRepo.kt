@@ -2,10 +2,12 @@ package com.ark.sanjeevani.domain.repository
 
 import com.ark.sanjeevani.domain.enums.HospitalType
 import com.ark.sanjeevani.domain.model.BannerItem
+import com.ark.sanjeevani.domain.model.Dietitian
 import com.ark.sanjeevani.domain.model.Doctor
 import com.ark.sanjeevani.domain.model.DoctorCategory
 import com.ark.sanjeevani.domain.model.Hospital
 import com.ark.sanjeevani.domain.model.HospitalRoom
+import com.ark.sanjeevani.domain.model.Physiotherapist
 
 interface DatabaseRepo {
     suspend fun getAllCities(): Result<List<String>>
@@ -27,4 +29,8 @@ interface DatabaseRepo {
     suspend fun getDoctorCategories(): Result<List<DoctorCategory>>
 
     suspend fun getDoctorsByCategory(categoryId: String): Result<List<Doctor>>
+
+    suspend fun getPhysiotherapists(): Result<List<Physiotherapist>>
+
+    suspend fun getDietitians(): Result<List<Dietitian>>
 }

@@ -2,15 +2,15 @@ package com.ark.sanjeevani.koin
 
 import com.ark.sanjeevani.data.remote.SupabaseAuth
 import com.ark.sanjeevani.data.remote.SupabaseDb
-import com.ark.sanjeevani.data.repo.AuthRepoImpl
-import com.ark.sanjeevani.data.repo.DbRepoImpl
+import com.ark.sanjeevani.data.repo.AuthRepositoryImpl
+import com.ark.sanjeevani.data.repo.DbRepositoryImpl
 import com.ark.sanjeevani.domain.repository.AuthenticationRepo
 import com.ark.sanjeevani.domain.repository.DatabaseRepo
 import com.ark.sanjeevani.presentation.features.auth.logic.login.LoginViewModel
 import com.ark.sanjeevani.presentation.features.auth.logic.reg.RegistrationViewModel
-import com.ark.sanjeevani.presentation.features.individual.doctor.logic.DoctorViewModel
 import com.ark.sanjeevani.presentation.features.individual.home.logic.HomeViewModel
 import com.ark.sanjeevani.presentation.features.individual.hospital.logic.HospitalViewModel
+import com.ark.sanjeevani.presentation.features.individual.service.logic.ServiceViewModel
 import com.ark.sanjeevani.presentation.features.individual.tab.logic.TabViewModel
 import com.ark.sanjeevani.presentation.features.onBoarding.logic.LocalizationViewModel
 import com.ark.sanjeevani.utils.NetworkViewModel
@@ -29,15 +29,15 @@ val appModule = module {
     }
 
     viewModelOf(::LocalizationViewModel)
-    singleOf(::AuthRepoImpl) { bind<AuthenticationRepo>() }
+    singleOf(::AuthRepositoryImpl) { bind<AuthenticationRepo>() }
     singleOf(::SupabaseAuth)
     viewModelOf(::HomeViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::RegistrationViewModel)
     singleOf(::SupabaseDb)
-    singleOf(::DbRepoImpl) { bind<DatabaseRepo>() }
+    singleOf(::DbRepositoryImpl) { bind<DatabaseRepo>() }
     viewModelOf(::NetworkViewModel)
     viewModelOf(::HospitalViewModel)
     viewModelOf(::TabViewModel)
-    viewModelOf(::DoctorViewModel)
+    viewModelOf(::ServiceViewModel)
 }

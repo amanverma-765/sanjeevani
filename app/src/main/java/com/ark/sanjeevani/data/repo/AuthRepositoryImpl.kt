@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class AuthRepoImpl(
+class AuthRepositoryImpl(
     private val supabaseAuth: SupabaseAuth,
     externalScope: CoroutineScope
 ) : AuthenticationRepo {

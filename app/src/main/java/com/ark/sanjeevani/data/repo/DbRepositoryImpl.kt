@@ -1,20 +1,24 @@
 package com.ark.sanjeevani.data.repo
 
 import com.ark.sanjeevani.data.mapper.BannerItemMapper.toBannerItem
+import com.ark.sanjeevani.data.mapper.DoctorMapper.toDietitian
 import com.ark.sanjeevani.data.mapper.DoctorMapper.toDoctor
 import com.ark.sanjeevani.data.mapper.DoctorMapper.toDoctorCategory
+import com.ark.sanjeevani.data.mapper.DoctorMapper.toPhysiotherapist
 import com.ark.sanjeevani.data.mapper.HospitalMapper.toHospital
 import com.ark.sanjeevani.data.mapper.HospitalMapper.toHospitalRoom
 import com.ark.sanjeevani.data.remote.SupabaseDb
 import com.ark.sanjeevani.domain.enums.HospitalType
 import com.ark.sanjeevani.domain.model.BannerItem
+import com.ark.sanjeevani.domain.model.Dietitian
 import com.ark.sanjeevani.domain.model.Doctor
 import com.ark.sanjeevani.domain.model.DoctorCategory
 import com.ark.sanjeevani.domain.model.Hospital
 import com.ark.sanjeevani.domain.model.HospitalRoom
+import com.ark.sanjeevani.domain.model.Physiotherapist
 import com.ark.sanjeevani.domain.repository.DatabaseRepo
 
-class DbRepoImpl(private val supabaseDb: SupabaseDb) : DatabaseRepo {
+class DbRepositoryImpl(private val supabaseDb: SupabaseDb) : DatabaseRepo {
     override suspend fun getAllCities(): Result<List<String>> {
         return supabaseDb.getAllCities()
     }
@@ -61,6 +65,22 @@ class DbRepoImpl(private val supabaseDb: SupabaseDb) : DatabaseRepo {
         return supabaseDb.getDoctorsByCategory(categoryId).map { result ->
             result.map {
                 it.toDoctor()
+            }
+        }
+    }
+
+    override suspend fun getPhysiotherapists(): Result<List<Physiotherapist>> {
+        return supabaseDb.getPhysiotherapist().map { result ->
+            result.map {
+                it.toPhysiotherapist()
+            }
+        }
+    }
+
+    override suspend fun getDietitians(): Result<List<Dietitian>> {
+        return supabaseDb.getDietitian().map { result ->
+            result.map {
+                it.toDietitian()
             }
         }
     }

@@ -41,4 +41,10 @@ sealed interface IndividualDestinations {
 
     @Serializable
     data object DoctorDetail : IndividualDestinations
+
+    @Serializable
+    data object Physiotherapist : IndividualDestinations
+
+    @Serializable
+    data object Dietitian : IndividualDestinations
 }

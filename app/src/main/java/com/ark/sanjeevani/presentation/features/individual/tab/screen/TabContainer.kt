@@ -101,9 +101,18 @@ fun TabContainer(
                         },
                         onServiceClick = {
                             when (it) {
-                                ServiceType.DOCTOR -> navController.navigate(IndividualDestinations.DoctorCategory)
-                                ServiceType.PHYSIOTHERAPIST -> {}
-                                ServiceType.DIETITIAN -> {}
+                                ServiceType.DOCTOR -> {
+                                    navController.navigate(IndividualDestinations.DoctorCategory)
+                                }
+
+                                ServiceType.PHYSIOTHERAPIST -> {
+                                    navController.navigate(IndividualDestinations.Physiotherapist)
+                                }
+
+                                ServiceType.DIETITIAN -> {
+                                    navController.navigate(IndividualDestinations.Dietitian)
+                                }
+
                                 ServiceType.MEDICAL_STORE -> {}
                                 ServiceType.LABS -> {}
                                 ServiceType.BLOOD_BANKS -> {}
